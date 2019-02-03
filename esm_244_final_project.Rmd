@@ -1,0 +1,57 @@
+---
+title: "esm_244_final_project"
+author: "Anna Calle"
+date: "2/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Data wrangling for Snowy Plover tab
+```{r}
+# Load packages and read Snowy Plover csv
+
+library(tidyverse)
+snowyplover <- read_csv("SnowyPlover.csv")
+
+```
+
+```{r}
+# Count table of predators by year
+
+predation_table <- snowyplover %>% 
+  select(year, predators) %>% 
+  filter( predators != "NA") %>% 
+  count(predators, year) %>% 
+  spread(year, n)
+
+predation_table[is.na(predation_table)] <- 0
+
+
+
+```
+
+```{r}
+# Graph using count table
+predators_graph <- ggplot( predation_table, aes( x = predators, y = `2015`)) +
+  geom_col()
+
+predators_graph
+```
+
+```{r}
+# Count table filtered by specific year
+predation <- snowyplover %>% 
+  select(year, predators) %>% 
+  filter( predators != "NA") %>%
+  filter( year == "2015") %>% 
+  count(predators, year)
+
+# Graph using filtered count table
+predators_graph2 <- ggplot(predation, aes( x = predators, y = n)) +
+  geom_col()
+
+predators_graph2
+```
