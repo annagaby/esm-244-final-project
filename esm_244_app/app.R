@@ -54,10 +54,10 @@ ui <- fluidPage(
                        # Sidebar with input for who knows
                        sidebarLayout(
                          sidebarPanel(
-                           checkboxGroupInput("breeding_stage",
+                           checkboxGroupInput("stage",
                                               "Select breeding stage:",
-                                              choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
-                                              selected = "Nests")
+                                              choices = c("nests", "eggs", "hatched", "fledged"),
+                                              selected = "nests")
                            
                          ),
                          # Show a plot of the generated distribution
@@ -118,6 +118,17 @@ server <- function(input, output) {
       scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic()
   })
+  
+  output$linesPlot <- renderPlot({
+    # Render a line graph
+    breeding_filtered <- breeding_table %>% 
+      filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
+    
+    ggplot(breeding_filtered, aes(x = year, y = count, group = stage)) +
+      geom_line(aes(color = stage)) +
+      theme_classic()
+  })
+  
   
   output$scatter <- renderPlot({
     

@@ -51,7 +51,59 @@ predation <- snowyplover %>%
 
 # Graph using filtered count table
 predators_graph2 <- ggplot(predation, aes( x = predators, y = n)) +
-  geom_col()
+  geom_col() +
+  xlab("Predator") +
+      ylab("Number of Predated Nests") +
+      scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
+      theme_classic()
 
 predators_graph2
 ```
+
+
+```{r}
+# Playing with data
+
+breeding <- snowyplover %>% 
+  select( year, total_eggs, eggs_hatched, chicks_fledged) %>% 
+  mutate( nests = 1)
+ 
+# Removing NA, ".", ?, and uncomfirmed
+breeding[is.na(breeding)] <- 0
+breeding[ breeding == "." | breeding == "unconfirmed" | breeding == "?"] <- 0
+
+# Coerce to numeric class
+breeding = as.data.frame(sapply(breeding, as.numeric))
+
+# Creating count table by year and by breeding stage
+
+breeding_table <- breeding %>% 
+  group_by(year) %>% 
+  summarise( nests = sum(nests), eggs = sum(total_eggs), hatched = sum(eggs_hatched), fledged = sum(chicks_fledged)) %>% 
+  gather("stage", "count", 2:5)
+
+# Creating filtered data
+
+breeding_filtered <- breeding_table %>% 
+  filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
+
+# Graph
+
+breeding_graph <- ggplot(breeding_table, aes(x = year, y = count, group = stage)) +
+  geom_line(aes(color = stage)) +
+  theme_classic()
+breeding_graph
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
