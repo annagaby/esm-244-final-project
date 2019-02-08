@@ -76,14 +76,14 @@ ui <- fluidPage(
                        sidebarLayout(
                          sidebarPanel(
                            
-                           radioButtons("scattercolor", 
-                                        "Select scatterplot color:",
-                                        choices = c("red","blue","gray50"))
+                           radioButtons("div_year", 
+                                        "Select Survey Year:",
+                                        choices = c("2015","2016","2017"))
                          ),
                          
                          # Show a plot of the generated distribution
                          mainPanel(
-                           plotOutput("scatter")
+                           plotOutput("diversity")
                          )
                        ))
               
@@ -132,14 +132,23 @@ server <- function(input, output) {
   })
   
   
-  output$scatter <- renderPlot({
+  output$diversity <- renderPlot({
     
-    ggplot(faithful, aes(x = waiting, y = eruptions)) +
-      geom_point(color = input$scattercolor) +
-      geom_smooth(method = "lm", se = FALSE)
+    bird_sp <- shorebirds %>% 
+      filter(Year == input$div_year) %>% #Filter data set by year (use radio buttons or drop down menu to select)
+      group_by(Species) %>% 
+      count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observe
+    
+    #Graph formatting
+    ggplot(bird_sp, aes(x=Polygon_Location))+
+      geom_bar()+
+      labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
+      theme_classic()+
+      theme(plot.title = element_text(hjust = 0.5)) 
     
   })
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
