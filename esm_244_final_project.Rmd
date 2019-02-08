@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Load packages and read Snowy Plover csv
 
 library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
 snowyplover <- read_csv("SnowyPlover.csv")
 
 ```
@@ -61,6 +63,7 @@ predators_graph2
 ```
 
 
+<<<<<<< HEAD
 ```{r}
 # Playing with data
 
@@ -93,10 +96,39 @@ breeding_graph <- ggplot(breeding_table, aes(x = year, y = count, group = stage)
   geom_line(aes(color = stage)) +
   theme_classic()
 breeding_graph
+=======
+
+
+```{r}
+
+shorebirds <- read_csv("COPR_Shorebird.csv")
+#read shorebird data
 
 ```
 
 
+```{r}
+
+#Shorebird abundance by location for 2015
+
+bird_2015 <- shorebirds %>% 
+    filter(Year == "2015") #Filter data set by year (use radio buttons or drop down menu to select)
+
+bird_2015_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2015)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
+
+#Maybe add a map to this page of polygons
+
+bird_2015_graph
+>>>>>>> 9d1d0ad3a85389ff9a31358cf5613a128519c412
+
+```
+
+
+<<<<<<< HEAD
 
 
 
@@ -106,4 +138,120 @@ breeding_graph
 
 
 
+=======
+```{r}
+#Shorebird abundance by location for 2015
+
+bird_2016 <- shorebirds %>% 
+    filter(Year == "2016") #Filter data set by year (use radio buttons or drop down menu to select)
+
+bird_2016_graph <- ggplot(bird_2016, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2016)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
+
+#Maybe add a map to this page of polygons
+
+bird_2016_graph
+
+```
+
+
+```{r}
+
+#Shorebird abundance by location for 2015
+
+bird_2017 <- shorebirds %>% 
+    filter(Year == "2017") #Filter data set by year (use radio buttons or drop down menu to select)
+
+bird_2017_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2017)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
+
+#Maybe add a map to this page of polygons
+
+bird_2017_graph
+
+```
+
+
+```{r}
+#Add code for 2018 dat here when we have it
+
+```
+
+
+```{r}
+#Shorebird diversity by location for 2015
+
+bird_2015_sp <- shorebirds %>% 
+    filter(Year == "2015") %>% #Filter data set by year (use radio buttons or drop down menu to select)
+  group_by(Species) %>% 
+  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
+  
+
+bird_2015_sp_graph <- ggplot(bird_2015_sp, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2015)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
+
+#Maybe add a map to this page of polygons
+
+bird_2015_sp_graph
+
+```
+
+
+```{r}
+#Shorebird diversity by location for 2016
+
+bird_2016_sp <- shorebirds %>% 
+    filter(Year == "2016") %>% #Filter data set by year (use radio buttons or drop down menu to select)
+  group_by(Species) %>% 
+  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
+  
+
+bird_2016_sp_graph <- ggplot(bird_2016_sp, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
+
+#Maybe add a map to this page of polygons
+
+bird_2016_sp_graph
+
+```
+
+
+```{r}
+#Shorebird diversity by location for 2017
+
+bird_2017_sp <- shorebirds %>% 
+    filter(Year == "2017") %>% #Filter data set by year (use radio buttons or drop down menu to select)
+  group_by(Species) %>% 
+  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
+  
+
+bird_2017_sp_graph <- ggplot(bird_2017_sp, aes(x=Polygon_Location))+
+  geom_bar()+
+  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2017)")+ 
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
+
+#Maybe add a map to this page of polygons
+
+bird_2017_sp_graph
+
+```
+
+
+```{r}
+#Add 2018 data when we get it
+```
+>>>>>>> 9d1d0ad3a85389ff9a31358cf5613a128519c412
 
