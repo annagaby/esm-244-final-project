@@ -11,11 +11,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Data wrangling for Snowy Plover tab
 ```{r}
-# Load packages and read Snowy Plover csv
+# Load packages and read Snowy Plover csv file
 
 library(tidyverse)
 library(ggplot2)
 library(RColorBrewer)
+library(gganimate)
 snowyplover <- read_csv("SnowyPlover.csv")
 
 ```
@@ -63,9 +64,8 @@ predators_graph2
 ```
 
 
-<<<<<<< HEAD
 ```{r}
-# Playing with data
+# Data wrangling with Snowy Ploverbreeding data
 
 breeding <- snowyplover %>% 
   select( year, total_eggs, eggs_hatched, chicks_fledged) %>% 
@@ -91,13 +91,15 @@ breeding_filtered <- breeding_table %>%
   filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
 
 # Graph
-
 breeding_graph <- ggplot(breeding_table, aes(x = year, y = count, group = stage)) +
   geom_line(aes(color = stage)) +
-  theme_classic()
+  theme_classic() +
+  geom_point( aes(color = stage)) +
+  transition_reveal(year)
 breeding_graph
-=======
 
+```
+  
 
 ```{r}
 
@@ -123,22 +125,10 @@ bird_2015_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
 #Maybe add a map to this page of polygons
 
 bird_2015_graph
->>>>>>> 9d1d0ad3a85389ff9a31358cf5613a128519c412
 
 ```
 
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-=======
 ```{r}
 #Shorebird abundance by location for 2015
 
@@ -253,5 +243,5 @@ bird_2017_sp_graph
 ```{r}
 #Add 2018 data when we get it
 ```
->>>>>>> 9d1d0ad3a85389ff9a31358cf5613a128519c412
+
 

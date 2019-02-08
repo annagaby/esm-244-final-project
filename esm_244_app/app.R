@@ -2,7 +2,7 @@ library(shiny)
 library(tidyverse)
 library(shinythemes)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 ui <- fluidPage(
   theme = shinytheme("sandstone"),
   
@@ -87,8 +87,10 @@ ui <- fluidPage(
                          )
                        ))
               
-              )
-  
+              ),
+  hr(),
+  tags$footer("Written by Angie Bouche <abouche@bren.ucsb.edu> and Anna Calle <annagcalle@bren.ucsb.edu> in programming language R version 3.5.1 (2018-07-02) "),
+  hr()
 )
 
 
@@ -99,12 +101,12 @@ ui <- fluidPage(
 
 
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- function(input, output) {
   
   
   output$distPlot <- renderPlot({
-    # Render a column graph
+    # Render a column graph for predators data
     predators_graph2 <- snowyplover %>% 
       select(year, predators) %>% 
       filter( predators != "NA") %>%
