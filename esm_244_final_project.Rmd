@@ -17,6 +17,7 @@ library(tidyverse)
 library(ggplot2)
 library(RColorBrewer)
 library(gganimate)
+library(lubridate)
 snowyplover <- read_csv("SnowyPlover.csv")
 
 ```
@@ -244,4 +245,37 @@ bird_2017_sp_graph
 #Add 2018 data when we get it
 ```
 
+```{r}
+# Wrangling data for top bird species
+
+#Converted dates into standard formate
+shorebirds$Date <- as.Date(shorebirds$Date, "%m/%d/%Y")
+
+# Top species by year
+top_by_year2 <- shorebirds %>%
+  select(Year, Species, Count) %>% 
+  filter( Year == 2015) %>% 
+  group_by(Species) %>% 
+  summarize( count = sum(Count)) %>% 
+  arrange(-count) %>% 
+  head(6)
+
+# Monthly data filtered for top species by year
+top_filtered2 <- shorebirds %>% 
+  mutate( Month = month(Date)) %>% 
+  select( Month, Species, Count, Year) %>% 
+  filter( Year == 2015) %>% 
+  group_by(Month, Species) %>%
+  summarise( count = sum(Count)) %>% 
+  filter( Species == top_by_year2$Species[1] | Species == top_by_year2$Species[2] | Species == top_by_year2$Species[3] | Species == top_by_year2$Species[4] | Species == top_by_year2$Species[5] | Species == top_by_year2$Species[6] | Species == top_by_year2$Species[7] | Species == top_by_year2$Species[8] | Species == top_by_year2$Species[9]) %>% 
+  arrange(Species, -count)
+
+top_graph <- ggplot( top_filtered2, aes( x = Month, y = count)) + geom_col() + 
+facet_wrap(~Species) +
+theme_classic() +
+scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))
+
+top_graph
+
+```
 

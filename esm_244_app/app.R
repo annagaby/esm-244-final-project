@@ -85,17 +85,35 @@ ui <- fluidPage(
                          mainPanel(
                            plotOutput("diversity")
                          )
-                       ))
+                       ),
+              # Sidebar with a radio button input for year and select input for number of top species
+              sidebarLayout(
+                sidebarPanel(
+                  
+                  radioButtons("top_year", 
+                               "Select Survey Year:",
+                               choices = c("2015","2016","2017")
+                ),
+                selectInput("top_number", 
+                            "Select number of top species:",
+                            choices = c(1,2,3,4,5,6,7,8,9),
+                            selected = 3)
+              ),
+                
+                
+                # Show a plot of the generated distribution
+                mainPanel(
+                  plotOutput("topPlot", height = "600px")
+                )
+              )
+              
               
               ),
   hr(),
   tags$footer("Written by Angie Bouche <abouche@bren.ucsb.edu> and Anna Calle <annagcalle@bren.ucsb.edu> in programming language R version 3.5.1 (2018-07-02) "),
   hr()
 )
-
-
-
-
+)
 
 
 
@@ -125,7 +143,7 @@ server <- function(input, output) {
     # Render a line graph
     breeding_filtered <- breeding_table %>% 
       filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
-    
+  
     ggplot(breeding_filtered, aes(x = year, y = count, group = stage)) +
       geom_line(aes(color = stage)) +
       theme_classic()
@@ -145,6 +163,35 @@ server <- function(input, output) {
       labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
       theme_classic()+
       theme(plot.title = element_text(hjust = 0.5)) 
+    
+  })
+  
+
+  
+  output$topPlot <- renderPlot({
+    # Render a column graph
+    top_by_year <- shorebirds %>%
+        select(Year, Species, Count) %>% 
+        filter( Year == input$top_year) %>% 
+        group_by(Species) %>% 
+        summarize( count = sum(Count)) %>% 
+        arrange(-count) %>% 
+        head(input$top_number)
+  
+    top_filtered <- shorebirds %>% 
+      mutate( Month = month(Date)) %>% 
+      select( Month, Species, Count, Year) %>% 
+      filter( Year == input$top_year) %>% 
+      group_by(Month, Species) %>%
+      summarise( count = sum(Count)) %>% 
+      filter( Species == top_by_year$Species[1] | Species == top_by_year$Species[1] | Species == top_by_year$Species[2] | Species == top_by_year$Species[3] | Species == top_by_year$Species[4] | Species == top_by_year$Species[5] | Species == top_by_year$Species[6] | Species == top_by_year$Species[7] | Species == top_by_year$Species[8] | Species == top_by_year$Species[9]) %>% 
+      arrange(Species, -count)
+    
+    ggplot( top_filtered, aes( x = Month, y = count)) + geom_col() + 
+      facet_wrap(~Species) +
+      theme_classic() +
+      scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))
+    
     
   })
 }
