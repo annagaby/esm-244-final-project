@@ -7,8 +7,8 @@ ui <- fluidPage(
   theme = shinytheme("sandstone"),
   
   # Application title
-  titlePanel(tags$img(src = "https://copr.nrs.ucsb.edu/sites/default/files/copr-logo.jpg", "Snowy Plover and Shorebird Abundance at Coal Oil Point Reserve"),
-             "Snowy Plover and Shorebird Abundance at Coal Point Oil Reserve"),
+  titlePanel(tags$img(src = "https://copr.nrs.ucsb.edu/sites/default/files/copr-logo.jpg", "Snowy Plover and Bird Abundance at Coal Oil Point Reserve"),
+             "Snowy Plover and Bird Abundance at Coal Point Oil Reserve"),
   
   navbarPage( "",
               
@@ -17,15 +17,18 @@ ui <- fluidPage(
                        h1("About this App "),
                        p("This data exploration tool is intended for use by educators, COPR visitors and the public."),
                        h1("Coal Oil Point Reserve "),
-                       p("COPR is a small area surrounded by increasing urbanization.  Our main challenge is to maintain the habitats and species that live here, despite habitat fragmentation, pollution, disturbances, and climate change.  Most of our conservation programs started because we noticed a species' population declining over time.  We first try to understand the factors causing the decline and then implement actions to reduce or eliminate these threats.  For many species, the reserve's boundaries are not sufficient for their safety and survival.  Cooperation with neighboring properties in a much larger spacial scale is essential to the protection of some species."),
+                       p("Coal Oil Point Reserve (COPR) is a small area that includes dune vegetation and rare wildlife, like the dune spider, the globose dune beetle and the threatened Western Snowy Plover surrounded by increasing urbanization.  The main challenge  at the reserve is to maintain the habitats and species that live here, despite habitat fragmentation, pollution, disturbances, and climate change.  Many of our wildlife and habitat conservation programs started because we noticed a species' population declining over time.  We first try to understand the factors causing the decline and then implement actions to reduce or eliminate these threats.  For many species, the reserve's boundaries are not sufficient for their safety and survival.  Cooperation with neighboring properties in a much larger spacial scale is essential to the protection of some species."),
                        tags$a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "COPR website"),
                        h2("Western Snowy Plover"),
-                       p("The Western Snowy Plover, Charadrius nivosus nivosus, is a shorebird that inhabits beaches and lake shores.  The Pacific Coast population of the Western Snowy Plover was listed as \"threatened\" under the Endangered Species Act in 1993 because of declining populations mainly due to loss of habitat.  The stretch of beach between Isla Vista and Ellwood (including Sands Beach) was designated \"Critical Habitat\" in December of 1999; at the time of the critical habitat designation, the population in the entire Pacific Coast of the United States was estimated at less than 1500 individuals.  Coal Oil Point Reserve, with its sandy beach, sand dunes, and adjacent estuary mouth is one of a few choice west coast locations where the snowy plovers can still breed and thrive.  With public education and symbolic fences, the plovers at COPR made a comeback. "),
-                       h2("Shorebird Abundance"),
-                       p("Birders count birds at the reserve daily, but these data are seldom associated with a specific area.  Therefore, they cannot be used to study trends over time.  For this type of study, the abundance and diversity of birds need to be measured in the same way, and within the same area, every time.  
+                       p("The Western Snowy Plover, Charadrius nivosus nivosus, is a shorebird that inhabits beaches and lake shores.  The Pacific Coast population of the Western Snowy Plover was listed as \"threatened\" under the Endangered Species Act in 1993 because of declining populations mainly due to loss of habitat.  The stretch of beach between Isla Vista and Ellwood (including Sands Beach) was designated \"critical habitat\" in December of 1999; at the time of the critical habitat designation, the population in the entire Pacific Coast of the United States was estimated at less than 1500 individuals.  Coal Oil Point Reserve, with its sandy beach, sand dunes, and adjacent estuary mouth is one of a few choice west coast locations where the snowy plovers can still breed and thrive.  With public education and symbolic fences, the plovers at COPR made a comeback. "),
+                       h2("Bird Abundance"),
+                       p("COPR is one of the Audubon's Important bird Areas. Birders count organinisms at the reserve daily and have been doing this for many years, but these data are seldom associated with a specific area.  Therefore, they cannot be used to study trends over time.  FOr accurate analysis abundance and diversity of birds need to be measured in the same way, and within the same area, every time.  
                          
-                         In February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve.  These surveys provide useful data for researchers and students and allow us to understand how birds use these habitats."),
-                       tags$img(src = "https://copr.nrs.ucsb.edu/sites/default/files/styles/top_image/public/images/9.jpg?itok=Lv_jYTEA", align = "center", alt = "Image of Western Snowy Plover chicks")
+                         Beginning in February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve known as polygons.  These surveys provide useful data for researchers and students and allow us to understand how birds use these diverse habitats on the reserve."), 
+                       
+                       tags$a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Bird Survey Locations"),
+                       HTML("<br><br><br>"),
+                       tags$img(src = "https://copr.nrs.ucsb.edu/sites/default/files/styles/top_image/public/images/17711743361_bfdb440d8a_o.jpg?itok=-c8bPJ9X", align = "center", alt = "Image of Western Snowy Plover chicks")
                        
                        ),
               
@@ -70,7 +73,8 @@ ui <- fluidPage(
               ),
               
               # Third tab
-              tabPanel("Shorebirds",
+              tabPanel("All Birds",
+                       titlePanel("Species Diversity by Year"), #titles widget
                        
                        # Sidebar with a slider input for number of bins 
                        sidebarLayout(
@@ -86,6 +90,9 @@ ui <- fluidPage(
                            plotOutput("diversity")
                          )
                        ),
+                       
+                titlePanel("Top Bird Species by Abundance"), #titles widget
+                
               # Sidebar with a radio button input for year and select input for number of top species
               sidebarLayout(
                 sidebarPanel(
@@ -169,10 +176,9 @@ server <- function(input, output) {
     #Graph formatting
     ggplot(bird_sp, aes(x=Polygon_Location))+
       geom_bar()+
-      labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
+      labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (input$div_year)")+ 
       theme_classic()+
       theme(plot.title = element_text(hjust = 0.5)) 
-    
   })
   
 
