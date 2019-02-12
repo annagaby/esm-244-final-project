@@ -97,7 +97,7 @@ ui <- fluidPage(
                 selectInput("top_number", 
                             "Select number of top species:",
                             choices = c(1,2,3,4,5,6,7,8,9),
-                            selected = 3)
+                            selected = 6)
               ),
                 
                 
@@ -139,14 +139,23 @@ server <- function(input, output) {
       theme_classic()
   })
   
-  output$linesPlot <- renderPlot({
-    # Render a line graph
-    breeding_filtered <- breeding_table %>% 
-      filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
   
-    ggplot(breeding_filtered, aes(x = year, y = count, group = stage)) +
+    # Create reactive value
+    breeding_filtered <- reactive({
+        breeding_table %>% 
+      filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
+      })
+    
+    # Render a line graph
+    output$linesPlot <- renderPlot({
+      if(is.null(input$stage)){
+        return()
+      }
+      else{
+    breeding_filtered() %>% 
+      ggplot( aes(x = year, y = count, group = stage)) +
       geom_line(aes(color = stage)) +
-      theme_classic()
+      theme_classic()}
   })
   
   
@@ -168,26 +177,34 @@ server <- function(input, output) {
   
 
   
-  output$topPlot <- renderPlot({
+  
     # Render a column graph
-    top_by_year <- shorebirds %>%
+    top_by_year <- reactive ({
+      shorebirds %>%
         select(Year, Species, Count) %>% 
         filter( Year == input$top_year) %>% 
         group_by(Species) %>% 
         summarize( count = sum(Count)) %>% 
         arrange(-count) %>% 
         head(input$top_number)
+    })
+    
   
-    top_filtered <- shorebirds %>% 
+    top_filtered <- reactive({
+      shorebirds %>% 
       mutate( Month = month(Date)) %>% 
       select( Month, Species, Count, Year) %>% 
       filter( Year == input$top_year) %>% 
       group_by(Month, Species) %>%
       summarise( count = sum(Count)) %>% 
-      filter( Species == top_by_year$Species[1] | Species == top_by_year$Species[1] | Species == top_by_year$Species[2] | Species == top_by_year$Species[3] | Species == top_by_year$Species[4] | Species == top_by_year$Species[5] | Species == top_by_year$Species[6] | Species == top_by_year$Species[7] | Species == top_by_year$Species[8] | Species == top_by_year$Species[9]) %>% 
+      filter( Species == top_by_year()$Species[1] | Species == top_by_year()$Species[1] | Species == top_by_year()$Species[2] | Species == top_by_year()$Species[3] | Species == top_by_year()$Species[4] | Species == top_by_year()$Species[5] | Species == top_by_year()$Species[6] | Species == top_by_year()$Species[7] | Species == top_by_year()$Species[8] | Species == top_by_year()$Species[9]) %>% 
       arrange(Species, -count)
+    })
     
-    ggplot( top_filtered, aes( x = Month, y = count)) + geom_col() + 
+    output$topPlot <- renderPlot({
+    
+    top_filtered() %>% 
+        ggplot(aes( x = Month, y = count)) + geom_col() + 
       facet_wrap(~Species) +
       theme_classic() +
       scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))
