@@ -145,7 +145,6 @@ server <- function(input, output) {
       labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
       theme_classic()+
       theme(plot.title = element_text(hjust = 0.5)) 
-    
   })
 }
 
