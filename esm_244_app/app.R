@@ -35,7 +35,7 @@ ui <- fluidPage(
               
               # Second tab
               tabPanel("Western Snowy Plover",
-                       titlePanel("Nest Failure by year"),
+                       titlePanel("Nest Failure by Year"),
                        
                        # Sidebar with select box input for number of year 
                        sidebarLayout(
@@ -132,38 +132,39 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
     # Render a column graph for predators data
-    predators_graph2 <- snowyplover %>% 
+    predators_graph <- snowyplover %>% 
       select(year, failure_cause) %>% 
       filter( failure_cause != "NA") %>%
       filter( year == input$year) %>% 
-      count(failure_cause, year)
+      count(failure_cause, year) %>%
+      arrange(-n) %>% 
+      mutate( failure_cause = factor(failure_cause, levels = failure_cause))
     
-    ggplot(predators_graph2, aes( x = failure_cause, y = n)) +
+    ggplot(predators_graph, aes( x = failure_cause, y = n)) +
       geom_col() +
       xlab("Failure Cause") +
       ylab("Number of Failed Nests") +
-      scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
+      scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic()
   })
   
   
-    # Create reactive value
-    breeding_filtered <- reactive({
-        breeding_table %>% 
-      subset( stage == input$stage) %>% 
-        return()
-      })
 
-    # Render a line graph
+
+    # Render line graph for breeding data
     output$linesPlot <- renderPlot({
       if(is.null(input$stage)){
         return()
       }
       else{
-    breeding_filtered() %>% 
-      ggplot( aes(x = year, y = count, group = stage)) +
-      geom_line(aes(color = stage)) +
-      theme_classic()}
+        ggplot(breeding_table[ breeding_table$stage %in% input$stage,],
+               aes(x = year, y = count, group = stage)) +
+          geom_line(aes(color = stage)) +
+          theme_classic() +
+          scale_y_continuous(expand = c(0,0), limits = c(0,200)) +
+          scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018))
+          
+        }
   })
   
   
@@ -187,44 +188,42 @@ server <- function(input, output) {
   
     # Render a column graph
   
-  head_number <- reactive({ input$top_number
-    
-  })
+  #Converted dates into standard formate
+  shorebirds$Date <- as.Date(shorebirds$Date, "%m/%d/%Y")
   
-  filtered_by_year <- reactive({
+  # Top species by year
+  top_by_year <- reactive({
     shorebirds %>%
-      mutate( Month = month(Date)) %>% 
-      select(Month, Year, Species, Count) %>% 
-      filter( Year == input$top_year)
+    mutate( Month = month(Date)) %>%
+    select(Month, Year, Species, Count) %>% 
+    filter( Year == input$top_year) %>% 
+    group_by(Species) %>% 
+    summarize( count = sum(Count)) %>% 
+    arrange(-count) %>% 
+    head(as.numeric(input$top_number))
   })
   
-    top_by_year <- reactive ({
-      filtered_by_year()%>% 
-        group_by(Species) %>% 
-        summarize( count = sum(Count)) %>% 
-        arrange(-count) %>% 
-        head(head_number())
-    })
-    
   
-    top_filtered <- reactive({
-      filtered_by_year() %>% 
-      group_by(Month, Species) %>%
-      summarise( count = sum(Count)) %>% 
-     subset(Species == top_by_year()$Species) %>% 
-      arrange(Species, -count)
-    })
-    
-    output$topPlot <- renderPlot({
-    
-    top_filtered() %>% 
-        ggplot(aes( x = Month, y = count)) + geom_col() + 
-      facet_wrap(~Species) +
-      theme_classic() +
-      scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))
-    
-    
+  # Monthly data filtered for top species by year
+  top_filtered <-  reactive({
+    shorebirds %>%
+    mutate( Month = month(Date)) %>%
+    select(Month, Year, Species, Count) %>% 
+    filter( Year == input$top_year) %>% 
+    group_by(Month, Species)%>%
+    summarise( count = sum(Count))%>% 
+    arrange(Species, -count)
   })
+  
+  # Render column graph
+  output$topPlot <- renderPlot({
+  ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) + geom_col() + 
+    facet_wrap(~Species) +
+    theme_classic() +
+    scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
+      scale_y_continuous(expand = c(0,0))
+  })
+    
 }
 
 
