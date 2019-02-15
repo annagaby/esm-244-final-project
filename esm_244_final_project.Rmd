@@ -26,9 +26,9 @@ snowyplover <- read_csv("SnowyPlover.csv")
 # Count table of predators by year
 
 predation_table <- snowyplover %>% 
-  select(year, predators) %>% 
-  filter( predators != "NA") %>% 
-  count(predators, year) %>% 
+  select(year, failure_cause) %>% 
+  filter( failure_cause != "NA") %>% 
+  count(failure_cause, year) %>% 
   spread(year, n)
 
 predation_table[is.na(predation_table)] <- 0
@@ -39,7 +39,7 @@ predation_table[is.na(predation_table)] <- 0
 
 ```{r}
 # Graph using count table
-predators_graph <- ggplot( predation_table, aes( x = predators, y = `2015`)) +
+predators_graph <- ggplot( predation_table, aes( x = failure_cause, y = `2015`)) +
   geom_col()
 
 predators_graph
@@ -48,13 +48,13 @@ predators_graph
 ```{r}
 # Count table filtered by specific year
 predation <- snowyplover %>% 
-  select(year, predators) %>% 
-  filter( predators != "NA") %>%
+  select(year, failure_cause) %>% 
+  filter( failure_cause != "NA") %>%
   filter( year == "2015") %>% 
-  count(predators, year)
+  count(failure_cause, year)
 
 # Graph using filtered count table
-predators_graph2 <- ggplot(predation, aes( x = predators, y = n)) +
+predators_graph2 <- ggplot(predation, aes( x = failure_cause, y = n)) +
   geom_col() +
   xlab("Predator") +
       ylab("Number of Predated Nests") +
@@ -253,21 +253,24 @@ shorebirds$Date <- as.Date(shorebirds$Date, "%m/%d/%Y")
 
 # Top species by year
 top_by_year2 <- shorebirds %>%
-  select(Year, Species, Count) %>% 
+  mutate( Month = month(Date)) %>%
+  select(Month, Year, Species, Count) %>% 
   filter( Year == 2015) %>% 
   group_by(Species) %>% 
   summarize( count = sum(Count)) %>% 
   arrange(-count) %>% 
   head(6)
 
+
+
 # Monthly data filtered for top species by year
-top_filtered2 <- shorebirds %>% 
-  mutate( Month = month(Date)) %>% 
-  select( Month, Species, Count, Year) %>% 
+top_filtered2 <-  shorebirds %>%
+  mutate( Month = month(Date)) %>%
+  select(Month, Year, Species, Count) %>% 
   filter( Year == 2015) %>% 
-  group_by(Month, Species) %>%
-  summarise( count = sum(Count)) %>% 
-  filter( Species == top_by_year2$Species[1] | Species == top_by_year2$Species[2] | Species == top_by_year2$Species[3] | Species == top_by_year2$Species[4] | Species == top_by_year2$Species[5] | Species == top_by_year2$Species[6] | Species == top_by_year2$Species[7] | Species == top_by_year2$Species[8] | Species == top_by_year2$Species[9]) %>% 
+  group_by(Month, Species)%>%
+  summarise( count = sum(Count))%>% 
+subset( Species == top_by_year2) %>% 
   arrange(Species, -count)
 
 top_graph <- ggplot( top_filtered2, aes( x = Month, y = count)) + geom_col() + 

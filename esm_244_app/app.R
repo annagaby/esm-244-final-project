@@ -133,15 +133,15 @@ server <- function(input, output) {
   output$distPlot <- renderPlot({
     # Render a column graph for predators data
     predators_graph2 <- snowyplover %>% 
-      select(year, predators) %>% 
-      filter( predators != "NA") %>%
+      select(year, failure_cause) %>% 
+      filter( failure_cause != "NA") %>%
       filter( year == input$year) %>% 
-      count(predators, year)
+      count(failure_cause, year)
     
-    ggplot(predators_graph2, aes( x = predators, y = n)) +
+    ggplot(predators_graph2, aes( x = failure_cause, y = n)) +
       geom_col() +
-      xlab("Predator") +
-      ylab("Number of Predated Nests") +
+      xlab("Failure Cause") +
+      ylab("Number of Failed Nests") +
       scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic()
   })
@@ -150,9 +150,10 @@ server <- function(input, output) {
     # Create reactive value
     breeding_filtered <- reactive({
         breeding_table %>% 
-      filter( stage == input$stage[1] | stage == input$stage[2] | stage == input$stage[3] | stage == input$stage[4])
+      subset( stage == input$stage) %>% 
+        return()
       })
-    
+
     # Render a line graph
     output$linesPlot <- renderPlot({
       if(is.null(input$stage)){
@@ -185,25 +186,32 @@ server <- function(input, output) {
   
   
     # Render a column graph
+  
+  head_number <- reactive({ input$top_number
+    
+  })
+  
+  filtered_by_year <- reactive({
+    shorebirds %>%
+      mutate( Month = month(Date)) %>% 
+      select(Month, Year, Species, Count) %>% 
+      filter( Year == input$top_year)
+  })
+  
     top_by_year <- reactive ({
-      shorebirds %>%
-        select(Year, Species, Count) %>% 
-        filter( Year == input$top_year) %>% 
+      filtered_by_year()%>% 
         group_by(Species) %>% 
         summarize( count = sum(Count)) %>% 
         arrange(-count) %>% 
-        head(input$top_number)
+        head(head_number())
     })
     
   
     top_filtered <- reactive({
-      shorebirds %>% 
-      mutate( Month = month(Date)) %>% 
-      select( Month, Species, Count, Year) %>% 
-      filter( Year == input$top_year) %>% 
+      filtered_by_year() %>% 
       group_by(Month, Species) %>%
       summarise( count = sum(Count)) %>% 
-      filter( Species == top_by_year()$Species[1] | Species == top_by_year()$Species[1] | Species == top_by_year()$Species[2] | Species == top_by_year()$Species[3] | Species == top_by_year()$Species[4] | Species == top_by_year()$Species[5] | Species == top_by_year()$Species[6] | Species == top_by_year()$Species[7] | Species == top_by_year()$Species[8] | Species == top_by_year()$Species[9]) %>% 
+     subset(Species == top_by_year()$Species) %>% 
       arrange(Species, -count)
     })
     
