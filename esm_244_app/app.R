@@ -1,6 +1,7 @@
 library(shiny)
 library(tidyverse)
 library(shinythemes)
+library(kableExtra)
 
 # Define UI for application
 ui <- fluidPage(
@@ -110,7 +111,8 @@ ui <- fluidPage(
                 
                 # Show a plot of the generated distribution
                 mainPanel(
-                  plotOutput("topPlot", height = "600px")
+                  plotOutput("topPlot", height = "600px"),
+                  dataTableOutput("topTable")
                 )
               )
               
@@ -223,6 +225,15 @@ server <- function(input, output) {
     scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
       scale_y_continuous(expand = c(0,0))
   })
+  
+
+  
+  output$topTable <- renderDataTable({
+    
+    bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
+    colnames(bird_table) <- c("Alpha", "Common", "Scientific")
+    bird_table
+  }, options= list(paging = FALSE, searching = FALSE))
     
 }
 
