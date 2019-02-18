@@ -1,0 +1,15 @@
+Warning 6: Normalized/laundered field name: 'description' to 'descriptio'
+Warning 6: Normalized/laundered field name: 'description' to 'descriptio'
+Warning 1: Value '<div class="googft-info-window">
+<b>Date:</b> <br>
+<b>Time Start:</b> <br>
+<b>Time End:</b> <br>
+<b>Polygon-Location:</b> WEST SIDE Survey Boundaries<br>
+<b>Species:</b> <br>
+<b>Count:</b> <br>
+<b>Behavior:</b> <br>
+<b>Notes:</b> <br>
+<b>Observers:</b> <br>
+<b>Longitude:</b> 
+</div>' of field descriptio has been truncated to 254 characters.  This warning will not be emitted any more for that layer.
+Warning 6: Normalized/laundered field name: 'description' to 'descriptio'

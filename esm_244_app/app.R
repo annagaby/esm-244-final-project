@@ -1,7 +1,6 @@
 library(shiny)
 library(tidyverse)
 library(shinythemes)
-library(kableExtra)
 
 # Define UI for application
 ui <- fluidPage(
@@ -60,10 +59,11 @@ ui <- fluidPage(
                          sidebarPanel(
                            checkboxGroupInput("stage",
                                               "Select breeding stage:",
-                                              choices = c("nests", "eggs", "hatched", "fledged"),
-                                              selected = "nests")
+                                              choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
+                                              selected = "Nests")
                            
                          ),
+                         
                          # Show a plot of the generated distribution
                          mainPanel(
                            plotOutput("linesPlot")
@@ -140,14 +140,32 @@ server <- function(input, output) {
       filter( year == input$year) %>% 
       count(failure_cause, year) %>%
       arrange(-n) %>% 
-      mutate( failure_cause = factor(failure_cause, levels = failure_cause))
+      mutate( failure_cause = factor(failure_cause, levels = failure_cause)) %>% 
+      mutate(type_failure = case_when(
+                  failure_cause == "Skunk" ~ "Animal Predator",
+                  failure_cause == "Crow" ~ "Animal Predator",
+                  failure_cause == "Gull" ~ "Animal Predator",
+                  failure_cause == "Raccoon" ~ "Animal Predator",
+                  failure_cause == "Owl" ~ "Animal Predator",
+                  failure_cause == "Dog" ~ "Animal Predator",
+                  failure_cause == "Whimbrel" ~ "Animal Predator",
+                  failure_cause == "Tide" ~ "Environmental Factor",
+                  failure_cause == "Flooded" ~ "Environmental Factor",
+                  failure_cause == "Wind" ~ "Environmental Factor",
+                  failure_cause == "Car" ~ "Other",
+                  failure_cause == "Human" ~ "Other",
+                  failure_cause == "Unknown" ~ "Other",
+                  failure_cause == "Abandoned" ~ "Other"
+              ) )
     
     ggplot(predators_graph, aes( x = failure_cause, y = n)) +
-      geom_col() +
+      geom_col(aes(fill = type_failure)) +
       xlab("Failure Cause") +
       ylab("Number of Failed Nests") +
       scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
-      theme_classic()
+      theme_classic() +
+      scale_fill_discrete(breaks = c("Animal Predator", "Environmental Factor", "Other"),
+                        name = "Type of failure")
   })
   
   
@@ -164,7 +182,9 @@ server <- function(input, output) {
           geom_line(aes(color = stage)) +
           theme_classic() +
           scale_y_continuous(expand = c(0,0), limits = c(0,200)) +
-          scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018))
+          scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018)) +
+          xlab("Year") +
+          ylab("Number")
           
         }
   })
@@ -188,7 +208,7 @@ server <- function(input, output) {
 
   
   
-    # Render a column graph
+    # Render column graphs for selected top bird species
   
   #Converted dates into standard formate
   shorebirds$Date <- as.Date(shorebirds$Date, "%m/%d/%Y")
