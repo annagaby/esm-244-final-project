@@ -74,9 +74,7 @@ breeding_table <- breeding %>%
 breeding_graph <- ggplot(breeding_table, aes(x = year, y = count, group = stage)) +
   geom_line(aes(color = stage)) +
   theme_classic() +
-  geom_point( aes(color = stage)) +
-  transition_reveal(year)
-breeding_graph
+  geom_point( aes(color = stage))
 
 ```
   
@@ -273,7 +271,7 @@ bird_names <- read_csv("bird_names.csv")
 
 ```
 ```{r}
-# Trying to make anything that resembles a map
+# Creating map of the reserve
 
 # Use st_read instad read_csv, st stands for
 COPR_polygons <- st_read(dsn = ".", layer = "COPR_polygons-polygon") 
@@ -284,11 +282,12 @@ plot(COPR_polygons)
 ```
 
 ```{r}
-
+# Creating labels for polygons
 labels <- sprintf(
   "<strong>%s</strong>",
   COPR_polygons$NAME
 ) %>% lapply(htmltools::HTML)
+
 
 leaflet(COPR_polygons) %>% 
   addTiles() %>%
@@ -306,7 +305,11 @@ leaflet(COPR_polygons) %>%
   labelOptions = labelOptions(
     style = list("font-weight" = "normal", padding = "3px 8px"),
     textsize = "15px",
-    direction = "auto"))
+    direction = "auto")) %>% 
+  addMarkers(lat = 34.411371, lng = -119.876618,
+             label = "Nature Center Coal Oil Point Reserve") %>% 
+  addMarkers(lat = 34.407912, lng = -119.878954,
+             label = "Sands Beach Entrance")
 
 ```
 
