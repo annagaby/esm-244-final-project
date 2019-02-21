@@ -147,7 +147,7 @@ bird_2017_graph
 
 
 ```{r}
-#Add code for 2018 dat here when we have it
+#Add code for 2018 data here when we have it
 
 ```
 
@@ -270,6 +270,8 @@ bird_codes <- shorebirds %>%
 bird_names <- read_csv("bird_names.csv")
 
 ```
+
+
 ```{r}
 # Creating map of the reserve
 
@@ -306,11 +308,11 @@ leaflet(COPR_polygons) %>%
     style = list("font-weight" = "normal", padding = "3px 8px"),
     textsize = "15px",
     direction = "auto")) %>% 
+  align = "center"
   addMarkers(lat = 34.411371, lng = -119.876618,
              label = "Nature Center Coal Oil Point Reserve") %>% 
   addMarkers(lat = 34.407912, lng = -119.878954,
              label = "Sands Beach Entrance")
-
 ```
 
 
