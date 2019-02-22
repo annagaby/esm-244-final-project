@@ -95,8 +95,8 @@ bird_2015 <- shorebirds %>%
     filter(Year == "2015") #Filter data set by year (use radio buttons or drop down menu to select)
 
 bird_2015_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2015)")+ 
+  geom_bar(fill = "navajowhite3")+
+  labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2015)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
 
@@ -114,8 +114,8 @@ bird_2016 <- shorebirds %>%
     filter(Year == "2016") #Filter data set by year (use radio buttons or drop down menu to select)
 
 bird_2016_graph <- ggplot(bird_2016, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2016)")+ 
+  geom_bar(fill = "navajowhite3")+
+  labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2016)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
 
@@ -134,8 +134,8 @@ bird_2017 <- shorebirds %>%
     filter(Year == "2017") #Filter data set by year (use radio buttons or drop down menu to select)
 
 bird_2017_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number Observed", title = "Shorebird Abundance at COPR (2017)")+ 
+  geom_bar(fill = "navajowhite3")+
+  labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2017)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
 
@@ -163,7 +163,7 @@ bird_2015_sp <- shorebirds %>%
 
 bird_2015_sp_graph <- ggplot(bird_2015_sp, aes(x=Polygon_Location))+
   geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2015)")+ 
+  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2015)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
 
@@ -185,7 +185,7 @@ bird_2016_sp <- shorebirds %>%
 
 bird_2016_sp_graph <- ggplot(bird_2016_sp, aes(x=Polygon_Location))+
   geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2016)")+ 
+  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2016)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
 
@@ -207,7 +207,7 @@ bird_2017_sp <- shorebirds %>%
 
 bird_2017_sp_graph <- ggplot(bird_2017_sp, aes(x=Polygon_Location))+
   geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Shorebird Diversity at COPR (2017)")+ 
+  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2017)")+ 
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
 
@@ -252,7 +252,8 @@ top_filtered2 <-  shorebirds %>%
 top_graph <- ggplot( top_filtered2[top_filtered2$Species %in% top_by_year2$Species,], aes( x = Month, y = count)) + geom_col() + 
 facet_wrap(~Species) +
 theme_classic() +
-scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))
+theme(plot.title = element_text(hjust = 0.5)) +
+scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 
 top_graph
 
