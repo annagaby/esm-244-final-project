@@ -55,7 +55,7 @@ ui <- fluidPage(
                        
                        titlePanel("Breeding Success"),
                        
-                       # Sidebar with input for who knows
+                       # Sidebar with input for breeding stage
                        sidebarLayout(
                          sidebarPanel(
                            checkboxGroupInput("stage",
@@ -65,10 +65,18 @@ ui <- fluidPage(
                          ),
                          
                          
+                         
                          # Show a plot of the generated distribution
                          mainPanel(
                            plotOutput("linesPlot")
                          )
+                       ),
+                       fluidRow(
+                         HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
+                           <div class=\"panel-body\">
+                              Eggs data is the recorded number of “confirmed eggs”. In some cases, it is not possible to confirm the number of eggs due to the level of disturbance this would cause to nearby nests or chicks. This explains why in year 2007 there are no eggs laid, but there are eggs hatched and fledged chicks.
+                              </div>
+                              </div>")
                        )
                       
                        
