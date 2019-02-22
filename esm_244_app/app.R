@@ -202,8 +202,9 @@ server <- function(input, output) {
     
     #Graph formatting
     ggplot(bird_sp, aes(x=Polygon_Location))+
-      geom_bar()+
-      labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (input$div_year)")+ 
+      geom_bar(fill = "navajowhite3")+
+      labs(x= "Location", y = "Number of Species Observed")+ 
+      ggtitle(paste("Bird Diversity at COPR", input$div_year))+
       theme_classic()+
       theme(plot.title = element_text(hjust = 0.5)) 
   })
@@ -242,10 +243,12 @@ server <- function(input, output) {
   
   # Render column graph
   output$topPlot <- renderPlot({
-  ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) + geom_col() + 
+  ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) + geom_col(fill = "skyblue3") + 
     facet_wrap(~Species) +
-    theme_classic() +
-    scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
+    ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))+  
+    theme_classic()+
+    theme(plot.title = element_text(hjust = 0.5))+ 
+    scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
       scale_y_continuous(expand = c(0,0))
   })
   
