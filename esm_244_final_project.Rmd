@@ -44,7 +44,7 @@ predators_graph <- ggplot(predation, aes( x = failure_cause, y = n)) +
       scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic()
 
-predators_graph2
+predators_graph
 ```
 
 
@@ -293,27 +293,36 @@ labels <- sprintf(
 
 
 leaflet(COPR_polygons) %>% 
-  addTiles() %>%
-  addProviderTiles("Esri.WorldImagery") %>% 
-  addPolygons(weight = 1.0,
-              opacity = 1.0,
-              color = "white",
-              fillOpacity = 0.3,
-              fillColor = topo.colors(12),
-              highlight = highlightOptions(
-                weight = 5,
-    color = "white",
-    fillOpacity = 0.7),
-    label = labels,
-  labelOptions = labelOptions(
-    style = list("font-weight" = "normal", padding = "3px 8px"),
-    textsize = "15px",
-    direction = "auto")) %>% 
-  align = "center"
-  addMarkers(lat = 34.411371, lng = -119.876618,
-             label = "Nature Center Coal Oil Point Reserve") %>% 
-  addMarkers(lat = 34.407912, lng = -119.878954,
-             label = "Sands Beach Entrance")
+      addTiles( group = "Open Street Map") %>%
+      addProviderTiles("Esri.WorldImagery", group = "Esri World Imagery") %>%
+      addPolygons(weight = 1.0,
+                  opacity = 1.0,
+                  color = "white",
+                  fillOpacity = 0.3,
+                  fillColor = topo.colors(12),
+                  highlight = highlightOptions(
+                    weight = 5,
+                    color = "white",
+                    fillOpacity = 0.7),
+                  group = "Polygons",
+                  label = labels,
+                  labelOptions = labelOptions(
+                    style = list("font-weight" = "normal", padding = "3px 8px"),
+                    textsize = "15px",
+                    direction = "auto")) %>% 
+      addMarkers(lat = 34.411371, lng = -119.876618,
+                 label = "Nature Center Coal Oil Point Reserve",
+                 group = "Markers") %>% 
+      addMarkers(lat = 34.407912, lng = -119.878954,
+                 label = "Sands Beach Entrance",
+                 group = "Markers") %>% 
+  addLayersControl(
+    baseGroups = c("Esri World Imagery", "Open Street Map"),
+    overlayGroups = c("Polygons", "Markers"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+       
+    
 ```
 
 
