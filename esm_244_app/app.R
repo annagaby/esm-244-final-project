@@ -307,7 +307,12 @@ server <- function(input, output) {
         options = layersControlOptions(collapsed = FALSE))%>% 
       addEasyButton(easyButton(
         icon="fa-globe", title="Reset zoom",
-        onClick=JS("function(btn, map){ map.setZoom(15); }")))
+        onClick=JS("function(btn, map){ map.setZoom(15); }")))%>% 
+      addMiniMap(
+        tiles = providers$Esri.WorldImagery,
+        toggleDisplay = TRUE,
+        position = "bottomleft"
+      )
     
   })
 }

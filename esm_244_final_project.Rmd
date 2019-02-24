@@ -287,7 +287,7 @@ plot(COPR_polygons)
 ```{r}
 # Creating labels for polygons
 labels <- sprintf(
-  "<strong>%s</strong>",
+  "%s",
   COPR_polygons$NAME
 ) %>% lapply(htmltools::HTML)
 
@@ -319,11 +319,15 @@ leaflet(COPR_polygons) %>%
   addLayersControl(
     baseGroups = c("Esri World Imagery", "Open Street Map"),
     overlayGroups = c("Polygons", "Markers"),
-    options = layersControlOptions(collapsed = FALSE)
-  ) %>% 
+    options = layersControlOptions(collapsed = FALSE)) %>% 
   addEasyButton(easyButton(
     icon="fa-globe", title="Reset zoom",
-    onClick=JS("function(btn, map){ map.setZoom(15); }")))
+    onClick=JS("function(btn, map){ map.setZoom(15); }"))) %>% 
+  addMiniMap(
+    tiles = providers$Esri.WorldImagery,
+    toggleDisplay = TRUE,
+    position = "bottomleft"
+  )
        
     
 ```
