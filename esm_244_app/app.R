@@ -304,9 +304,10 @@ server <- function(input, output) {
       addLayersControl(
         baseGroups = c("Esri World Imagery", "Open Street Map"),
         overlayGroups = c("Polygons", "Markers"),
-        options = layersControlOptions(collapsed = FALSE)
-        
-      )
+        options = layersControlOptions(collapsed = FALSE))%>% 
+      addEasyButton(easyButton(
+        icon="fa-globe", title="Reset zoom",
+        onClick=JS("function(btn, map){ map.setZoom(15); }")))
     
   })
 }
