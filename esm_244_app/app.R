@@ -71,6 +71,7 @@ ui <- fluidPage(
                            plotOutput("linesPlot")
                          )
                        ),
+                       HTML("<br>"),
                        fluidRow(
                          HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
                            <div class=\"panel-body\">
@@ -124,7 +125,15 @@ ui <- fluidPage(
                            plotOutput("topPlot", height = "600px"),
                            dataTableOutput("topTable")
                          )
-                       )
+                       ),
+                       HTML("<br>"),
+                       fluidRow(
+                         HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
+                              <div class=\"panel-body\">
+                              Only January and February 2017 monthly observations on bird diversity available at this time.
+                              </div>
+                              </div>")
+                         )
                        
                        
               ),
@@ -267,7 +276,7 @@ server <- function(input, output) {
     bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
     colnames(bird_table) <- c("Alpha", "Common", "Scientific")
     bird_table
-  }, options= list(paging = FALSE, searching = FALSE))
+  }, options= list(paging = FALSE, searching = FALSE,  pageLength = 6))
   
   
   # Render map
