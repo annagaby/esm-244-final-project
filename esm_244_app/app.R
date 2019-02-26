@@ -25,7 +25,7 @@ ui <- fluidPage(
                        h2("Bird Abundance"),
                        p("COPR is one of the Audubon's Important bird Areas. Birders count organinisms at the reserve daily and have been doing this for many years, but these data are seldom associated with a specific area.  Therefore, they cannot be used to study trends over time.  FOr accurate analysis abundance and diversity of birds need to be measured in the same way, and within the same area, every time.  
                          
-                         Beginning in February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve known as polygons.  These surveys provide useful data for researchers and students and allow us to understand how birds use these diverse habitats on the reserve. The polygons are outlined in white on the interactive map below. The polygons are outlined in white on the interactive map below. More detailed observations are mapped on COPR's website at the hyperlink provided."), 
+                         Beginning in February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve known as polygons.  These surveys provide useful data for researchers and students and allow us to understand how birds use these diverse habitats on the reserve. The polygons are outlined in white on the interactive map below. More detailed observations are mapped on COPR's website at the hyperlink provided."), 
                        
                        tags$a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Individual Bird Observations", align = "center"),
                        HTML("<br><br><br>"),
@@ -183,8 +183,11 @@ server <- function(input, output) {
       ylab("Number of Affected Nests") +
       scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic() +
+      ggtitle(paste("Causes of Nest Failure at COPR", input$year))+
+      theme(plot.title = element_text(hjust = 0.5))+ 
       scale_fill_discrete(breaks = c("Animal Predator", "Environmental Factor", "Other"),
-                          name = "Type of failure")
+                          name = "Type of failure")+
+      scale_fill_manual(values = c("navajowhite3", "skyblue3", "olivedrab2"))
   })
   
   
@@ -198,10 +201,13 @@ server <- function(input, output) {
     else{
       ggplot(breeding_table[ breeding_table$stage %in% input$stage,],
              aes(x = year, y = count, group = stage)) +
-        geom_line(aes(color = stage)) +
+        geom_line(aes(color = stage), lwd =1.5) +
         theme_classic() +
+        ggtitle(paste("Snowy Plover Breeding Trends at COPR"))+
+        theme(plot.title = element_text(hjust = 0.5))+ 
         scale_y_continuous(expand = c(0,0), limits = c(0,200)) +
         scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018)) +
+        scale_color_manual(values = c("navajowhite3", "skyblue3", "indianred1","olivedrab2"))+
         xlab("Year") +
         ylab("Number") +
         labs( color = "Stage")

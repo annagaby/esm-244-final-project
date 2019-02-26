@@ -38,12 +38,13 @@ predation <- snowyplover %>%
 
 # Graph using filtered count table
 predators_graph <- ggplot(predation, aes( x = failure_cause, y = n)) +
-  geom_col() +
-  xlab("Predator") +
-      ylab("Number of Predated Nests") +
-      scale_y_continuous(limits = c(0,20), breaks = c(0,5,10,15,20)) +
-      theme_classic()
-
+    geom_col(aes(fill = type_failure)) +
+      xlab("Cause of Failure") +
+      ylab("Number of Affected Nests") +
+      scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
+      theme_classic() +
+      scale_fill_discrete(breaks = c("Animal Predator", "Environmental Factor", "Other"),
+                          name = "Type of failure")
 predators_graph
 ```
 
@@ -71,11 +72,17 @@ breeding_table <- breeding %>%
 
 
 # Graph
-breeding_graph <- ggplot(breeding_table, aes(x = year, y = count, group = stage)) +
-  geom_line(aes(color = stage)) +
-  theme_classic() +
-  geom_point( aes(color = stage))
+breeding_graph <- ggplot(breeding_table,aes(x = year, y = count, group = stage)) +
+        geom_line(aes(color = stage)) +
+        theme_classic() +
+        scale_y_continuous(expand = c(0,0), limits = c(0,200)) +
+        scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018)) +
+        scale_color_manual(values = c("navajowhite3", "skyblue3", "indianred1","lawngreen"))+
+        xlab("Year") +
+        ylab("Number") +
+        labs( color = "Stage")
 
+breeding_graph 
 ```
   
 
