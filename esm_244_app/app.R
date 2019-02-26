@@ -185,9 +185,8 @@ server <- function(input, output) {
       theme_classic() +
       ggtitle(paste("Causes of Nest Failure at COPR", input$year))+
       theme(plot.title = element_text(hjust = 0.5))+ 
-      scale_fill_discrete(breaks = c("Animal Predator", "Environmental Factor", "Other"),
-                          name = "Type of failure")+
-      scale_fill_manual(values = c("navajowhite3", "skyblue3", "olivedrab2"))
+      scale_fill_manual(labels = c("Animal Predator", "Environmental Factor", "Other"),
+                          name = "Type of failure", values = c("navajowhite3", "skyblue3", "olivedrab2"))
   })
   
   
