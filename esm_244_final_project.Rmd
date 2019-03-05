@@ -36,6 +36,8 @@ predation <- snowyplover %>%
   arrange(-n) %>% 
   mutate( failure_cause = factor(failure_cause, levels = failure_cause))
 
+
+
 # Graph using filtered count table
 predators_graph <- ggplot(predation, aes( x = failure_cause, y = n)) +
     geom_col() +
