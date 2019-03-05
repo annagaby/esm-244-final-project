@@ -322,7 +322,7 @@ leaflet(COPR_polygons) %>%
                  label = "Nature Center Coal Oil Point Reserve",
                  group = "Markers") %>% 
       addMarkers(lat = 34.407912, lng = -119.878954,
-                 label = "Sands Beach Entrance",
+                 label = "Public Access Sands Beach",
                  group = "Markers") %>% 
   addLayersControl(
     baseGroups = c("Esri World Imagery", "Open Street Map"),
