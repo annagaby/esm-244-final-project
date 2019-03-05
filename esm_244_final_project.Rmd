@@ -9,8 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Data wrangling for Snowy Plover tab
-```{r}
+### Tab 2: Snowy Plover Data
+```{r, message = FALSE, warning=FALSE}
 # Load packages and read Snowy Plover csv file
 
 library(tidyverse)
@@ -25,7 +25,7 @@ snowyplover <- read_csv("SnowyPlover.csv")
 
 ```
 
-
+## Widget 1: Nest Predation by Year
 ```{r}
 # Count table filtered by specific year
 predation <- snowyplover %>% 
@@ -44,11 +44,14 @@ predators_graph <- ggplot(predation, aes( x = failure_cause, y = n)) +
       ylab("Number of Affected Nests") +
       scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
       theme_classic() +
-      scale_fill_discrete(breaks = c("Animal Predator", "Environmental Factor", "Other"),
-                          name = "Type of failure")
+      ggtitle(paste("Causes of Nest Failure at COPR"))+
+      theme(plot.title = element_text(hjust = 0.5))
+
 predators_graph
+
 ```
 
+## Widget 2: Breeding Data Line Graph
 
 ```{r}
 # Data wrangling with Snowy Plover breeding data
@@ -74,8 +77,10 @@ breeding_table <- breeding %>%
 
 # Graph
 breeding_graph <- ggplot(breeding_table,aes(x = year, y = count, group = stage)) +
-        geom_line(aes(color = stage)) +
+        geom_line(aes(color = stage), lwd =1.5) +
         theme_classic() +
+        ggtitle(paste("Snowy Plover Breeding Trends at COPR"))+
+        theme(plot.title = element_text(hjust = 0.5))+ 
         scale_y_continuous(expand = c(0,0), limits = c(0,200)) +
         scale_x_continuous(expand = c(0,0), breaks = c(2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018)) +
         scale_color_manual(values = c("navajowhite3", "skyblue3", "indianred1","lawngreen"))+
@@ -85,30 +90,32 @@ breeding_graph <- ggplot(breeding_table,aes(x = year, y = count, group = stage))
 
 breeding_graph 
 ```
-  
+###Tab 3: Shorebird Diversity and Abundance  
 
-```{r}
+```{r, message = FALSE, warning=FALSE}
 
 shorebirds <- read_csv("COPR_Shorebird.csv")
 #read shorebird data
 
 ```
 
-
+## Widget 1: Bird Diversity by Year
 ```{r}
 
 #Shorebird abundance by location for 2015
 
 bird_2015 <- shorebirds %>% 
-    filter(Year == "2015") #Filter data set by year (use radio buttons or drop down menu to select)
-
+    filter(Year == "2015") %>% #Filter data set by year (use radio buttons or drop down menu to select)
+      group_by(Species) %>% 
+      count(Polygon_Location, Species)
+  
 bird_2015_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
   geom_bar(fill = "navajowhite3")+
-  labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2015)")+ 
+  labs(x= "Location", y = "Number Species Observed", title = "Bird Abundance at COPR (2015)")+ 
   theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
-
-#Maybe add a map to this page of polygons
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,80), breaks= c(0,20,40,60,80))
+   #histogram for locations of where shorebirds were found in beach polygons
 
 bird_2015_graph
 
@@ -116,7 +123,7 @@ bird_2015_graph
 
 
 ```{r}
-#Shorebird abundance by location for 2015
+#Shorebird abundance by location for 2016
 
 bird_2016 <- shorebirds %>% 
     filter(Year == "2016") #Filter data set by year (use radio buttons or drop down menu to select)
@@ -125,9 +132,9 @@ bird_2016_graph <- ggplot(bird_2016, aes(x=Polygon_Location))+
   geom_bar(fill = "navajowhite3")+
   labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2016)")+ 
   theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
-
-#Maybe add a map to this page of polygons
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,80), breaks= c(0,20,40,60,80)) #histogram for locations of where shorebirds were found in beach polygons
+  
 
 bird_2016_graph
 
@@ -136,7 +143,7 @@ bird_2016_graph
 
 ```{r}
 
-#Shorebird abundance by location for 2015
+#Shorebird abundance by location for 2017
 
 bird_2017 <- shorebirds %>% 
     filter(Year == "2017") #Filter data set by year (use radio buttons or drop down menu to select)
@@ -145,91 +152,15 @@ bird_2017_graph <- ggplot(bird_2015, aes(x=Polygon_Location))+
   geom_bar(fill = "navajowhite3")+
   labs(x= "Location", y = "Number Observed", title = "Bird Abundance at COPR (2017)")+ 
   theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #histogram for locations of where shorebirds were found in beach polygons
-
-#Maybe add a map to this page of polygons
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_y_continuous(expand = c(0,0), limits = c(0,80), breaks= c(0,20,40,60,80))
+  #histogram for locations of where shorebirds were found in beach polygons
 
 bird_2017_graph
 
 ```
 
-
-```{r}
-#Add code for 2018 data here when we have it
-
-```
-
-
-```{r}
-#Shorebird diversity by location for 2015
-
-bird_2015_sp <- shorebirds %>% 
-    filter(Year == "2015") %>% #Filter data set by year (use radio buttons or drop down menu to select)
-  group_by(Species) %>% 
-  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
-  
-
-bird_2015_sp_graph <- ggplot(bird_2015_sp, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2015)")+ 
-  theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
-
-#Maybe add a map to this page of polygons
-
-bird_2015_sp_graph
-
-```
-
-
-```{r}
-#Shorebird diversity by location for 2016
-
-bird_2016_sp <- shorebirds %>% 
-    filter(Year == "2016") %>% #Filter data set by year (use radio buttons or drop down menu to select)
-  group_by(Species) %>% 
-  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
-  
-
-bird_2016_sp_graph <- ggplot(bird_2016_sp, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2016)")+ 
-  theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
-
-#Maybe add a map to this page of polygons
-
-bird_2016_sp_graph
-
-```
-
-
-```{r}
-#Shorebird diversity by location for 2017
-
-bird_2017_sp <- shorebirds %>% 
-    filter(Year == "2017") %>% #Filter data set by year (use radio buttons or drop down menu to select)
-  group_by(Species) %>% 
-  count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observed
-  
-
-bird_2017_sp_graph <- ggplot(bird_2017_sp, aes(x=Polygon_Location))+
-  geom_bar()+
-  labs(x= "Location", y = "Number of Species Observed", title = "Bird Diversity at COPR (2017)")+ 
-  theme_classic()+
-  theme(plot.title = element_text(hjust = 0.5)) #bar graph for number of species found in beach polygons 
-
-#Maybe add a map to this page of polygons
-
-bird_2017_sp_graph
-
-```
-
-
-```{r}
-#Add 2018 data when we get it
-```
-
+##Widget 2: Top 1- 9 Species of Birds Monthly by Polygon
 ```{r}
 # Wrangling data for top bird species
 
@@ -257,17 +188,19 @@ top_filtered2 <-  shorebirds %>%
   summarise( count = sum(Count))%>% 
   arrange(Species, -count)
 
-top_graph <- ggplot( top_filtered2[top_filtered2$Species %in% top_by_year2$Species,], aes( x = Month, y = count)) + geom_col() + 
-facet_wrap(~Species) +
+top_graph <- ggplot( top_filtered2[top_filtered2$Species %in% top_by_year2$Species,], aes( x = Month, y = count)) + geom_col(fill = "skyblue3") + 
+facet_wrap(~Species, scale = 'free_x') +
 theme_classic() +
 theme(plot.title = element_text(hjust = 0.5)) +
-scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))+
+scale_y_continuous(expand = c(0, 0), limits=c(0,250))+
+labs( y = "Number Observed")
 
 top_graph
 
 ```
 
-```{r}
+```{r , message = FALSE, warning=FALSE}
 # List of bird codes and names
 
 bird_codes <- shorebirds %>% 
@@ -281,14 +214,13 @@ bird_names <- read_csv("bird_names.csv")
 ```
 
 
+###Tab 1: Creating Map of COPR Polygons
+
 ```{r}
 # Creating map of the reserve
 
 # Use st_read instad read_csv, st stands for
 COPR_polygons <- st_read(dsn = ".", layer = "COPR_polygons-polygon") 
-
-plot(COPR_polygons)
-
 
 ```
 

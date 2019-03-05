@@ -228,7 +228,10 @@ server <- function(input, output) {
       labs(x= "Location", y = "Number of Species Observed")+ 
       ggtitle(paste("Bird Diversity at COPR", input$div_year))+
       theme_classic()+
-      theme(plot.title = element_text(hjust = 0.5)) 
+      theme(plot.title = element_text(hjust = 0.5))+
+      scale_y_continuous(expand = c(0,0), limits = c(0,80), breaks= c(0,20,40,60,80))
+      
+   
   })
   
   
@@ -265,13 +268,14 @@ server <- function(input, output) {
   
   # Render column graph
   output$topPlot <- renderPlot({
-    ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) + geom_col(fill = "skyblue3") + 
-      facet_wrap(~Species) +
-      ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))+  
-      theme_classic()+
-      theme(plot.title = element_text(hjust = 0.5))+ 
-      scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
-      scale_y_continuous(expand = c(0,0))
+    ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +   geom_col(fill = "skyblue3") + 
+      facet_wrap(~Species, scale = 'free_x') +
+      theme_classic() +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      scale_x_continuous( breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))+
+      scale_y_continuous(expand = c(0, 0), limits = c(0,250))+
+      labs( y = "Number Observed")+
+      ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))
   })
   
   
