@@ -38,7 +38,7 @@ predation <- snowyplover %>%
 
 # Graph using filtered count table
 predators_graph <- ggplot(predation, aes( x = failure_cause, y = n)) +
-    geom_col(aes(fill = type_failure)) +
+    geom_col() +
       xlab("Cause of Failure") +
       ylab("Number of Affected Nests") +
       scale_y_continuous(expand = c(0,0),limits = c(0,20), breaks = c(0,5,10,15,20)) +
