@@ -15,19 +15,16 @@ ui <- fluidPage(
               # First tab
               tabPanel("Summary",
                        h1("About this App "),
-                       p("This data exploration tool is intended for use by educators, COPR visitors and the public."),
+                       p("This is a data exploration tool intended for educators, birdwatchers, beach users, and everyone interested on the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected by two of COPR’s programs: Snowy Plover Conservation and Bird Monitoring."),
                        h1("Coal Oil Point Reserve "),
-                       p("Coal Oil Point Reserve (COPR) is a small area that includes dune vegetation and rare wildlife, like the dune spider, the globose dune beetle and the threatened Western Snowy Plover surrounded by increasing urbanization.  The main challenge  at the reserve is to maintain the habitats and species that live here, despite habitat fragmentation, pollution, disturbances, and climate change.  Many of our wildlife and habitat conservation programs started because we noticed a species' population declining over time.  We first try to understand the factors causing the decline and then implement actions to reduce or eliminate these threats.  For many species, the reserve's boundaries are not sufficient for their safety and survival.  Cooperation with neighboring properties in a much larger spacial scale is essential to the protection of some species.Check out all of the different research and conservation efforts happening at COPR using the hyperlink below."),
-                       tags$a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "COPR website"),
-                       h2("Western Snowy Plover"),
+                       p("Coal Oil Point Reserve (COPR) is a small area that includes dune vegetation and rare wildlife, like the dune spider, the globose dune beetle and the threatened Western Snowy Plover surrounded by increasing urbanization.  The main challenge  at the reserve is to maintain the habitats and species that live here, despite habitat fragmentation, pollution, disturbances, and climate change.  Many of our wildlife and habitat conservation programs started because we noticed a species' population declining over time.  We first try to understand the factors causing the decline and then implement actions to reduce or eliminate these threats.  For many species, the reserve's boundaries are not sufficient for their safety and survival.  Cooperation with neighboring properties in a much larger spacial scale is essential to the protection of some species.Check out all of the different research and conservation efforts happening at COPR on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website.")),
+                       h2("Snowy Plover Conservation"),
                        p("The Western Snowy Plover, Charadrius nivosus nivosus, is a shorebird that inhabits beaches and lake shores.  The Pacific Coast population of the Western Snowy Plover was listed as \"threatened\" under the Endangered Species Act in 1993 because of declining populations mainly due to loss of habitat.  The stretch of beach between Isla Vista and Ellwood (including Sands Beach) was designated \"critical habitat\" in December of 1999; at the time of the critical habitat designation, the population in the entire Pacific Coast of the United States was estimated at less than 1500 individuals.  Coal Oil Point Reserve, with its sandy beach, sand dunes, and adjacent estuary mouth is one of a few choice west coast locations where the snowy plovers can still breed and thrive.  With public education and symbolic fences, the plovers at COPR made a comeback. "),
                        tags$img( style="display: block; margin-left: auto; margin-right: auto;", width ="100%", src = "https://lh3.googleusercontent.com/rAmbw7zPfHeh9-lOkmnL2Sl5ij1jShcfZejayPakYyiQvwnDuazcy6uzrxSry-Q6PoI9LTxTj1KFUJkpKa15DGXmV2IKV4au1ThwBwIi_f-J45BUmplIkTbMGYxO83dboZ1MclRx=w1920-h1080", alt = "Image of Western Snowy Plover chicks"),
-                       h2("Bird Abundance"),
+                       h2("Bird Monitoring"),
                        p("COPR is one of the Audubon's Important bird Areas. Birders count organinisms at the reserve daily and have been doing this for many years, but these data are seldom associated with a specific area.  Therefore, they cannot be used to study trends over time.  FOr accurate analysis abundance and diversity of birds need to be measured in the same way, and within the same area, every time.  
                          
-                         Beginning in February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve known as polygons.  These surveys provide useful data for researchers and students and allow us to understand how birds use these diverse habitats on the reserve. The polygons are outlined in white on the interactive map below. More detailed observations are mapped on COPR's website at the hyperlink provided."), 
-                       
-                       tags$a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Individual Bird Observations", align = "center"),
+                         Beginning in February 2015, Coal Oil Point Reserve implemented a long-term monitoring program to measure bird abundance and diversity within 10 permanent sampling areas on the reserve known as polygons.  These surveys provide useful data for researchers and students and allow us to understand how birds use these diverse habitats on the reserve. The polygons are outlined in white on the interactive map below. Individual observations with their locations are available in a", a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Google Fusion Table and Map"), "created by COPR."), 
                        HTML("<br><br><br>"),
                        leafletOutput("polygon_map")
                        
@@ -35,7 +32,7 @@ ui <- fluidPage(
               
               
               # Second tab
-              tabPanel("Western Snowy Plover",
+              tabPanel("Snowy Plover Conservation",
                        titlePanel("Nest Failure by Year"),
                        
                        # Sidebar with select box input for number of year 
@@ -87,7 +84,7 @@ ui <- fluidPage(
               ),
               
               # Third tab
-              tabPanel("All Birds",
+              tabPanel("Bird Monitoring",
                        titlePanel("Species Diversity by Year"), #titles widget
                        
                        # Sidebar with a slider input for number of bins 
