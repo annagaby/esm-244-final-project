@@ -259,8 +259,8 @@ server <- function(input, output) {
   # Monthly data filtered for top species by year
   top_filtered <-  reactive({
     shorebirds %>%
-      mutate( Month = month(Date)) %>%
-      select(Month, Year, Species, Count) %>% 
+      mutate( Month = as.factor(month(Date))) %>%
+      select(Month, Year, Species, Count)%>% 
       filter( Year == input$top_year) %>% 
       group_by(Month, Species)%>%
       summarise( count = sum(Count))%>% 
@@ -272,30 +272,32 @@ server <- function(input, output) {
   
   
   #Create facet labels with full bird name  
-  bird_names <-  reactive({ c(   `AMWI` = "American Wigeon",
-                                                `ANHU` = "Anna's Hummingbird", 
-                                                `BBPL` = "Black-Bellied Plover",
-                                                `CALT` = "California Towhee",
-                                                `HOFI` = "House Finch",
-                                                `MODO` = "Mourning Dove",
-                                                `NSHO` = "Northern Shoveler",
-                                                `RUDO` = "Ruddy Duck",
-                                                `SAND` = "Sanderling",
-                                                `SEPL` = "Semipalmated Plover",
-                                                `SNPL` = "Snowy Plover",
-                                                `WESA` = "Western Sandpiper",
-                                                `WILL` = "Willet")
-  })
+
   
   
   # Render column graph
   output$topPlot <- renderPlot({
+    bird_names2 <- c(   `AMWI` = "American Wigeon",
+                        `ANHU` = "Anna's Hummingbird", 
+                        `BBPL` = "Black-Bellied Plover",
+                        `CALT` = "California Towhee",
+                        `HOFI` = "House Finch",
+                        `MODO` = "Mourning Dove",
+                        `NSHO` = "Northern Shoveler",
+                        `RUDO` = "Ruddy Duck",
+                        `SAND` = "Sanderling",
+                        `SEPL` = "Semipalmated Plover",
+                        `SNPL` = "Snowy Plover",
+                        `WESA` = "Western Sandpiper",
+                        `WILL` = "Willet")
+    
+    
     ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +  
       geom_col(fill = "skyblue3") + 
-      facet_wrap(~Species, scale = 'free_x') +
+      facet_wrap(~Species, scale = 'free_x', labeller = as_labeller(bird_names2)) +
       theme_classic() +
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_x_discrete( drop = FALSE, breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))+
+      scale_x_discrete( drop = FALSE, breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
       scale_y_continuous(expand = c(0, 0), limits = c(0,250))+
       labs( y = "Number Observed")+
       ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))
@@ -304,7 +306,7 @@ server <- function(input, output) {
   
   output$topTable <- renderDataTable({
     bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
-    colnames(bird_table) <- c("Alpha", "Common", "Scientific")
+    colnames(bird_table) <- c("Alpha Code", "Common", "Scientific")
     bird_table
   }, options= list(paging = FALSE, searching = FALSE,  pageLength = 6))
 
