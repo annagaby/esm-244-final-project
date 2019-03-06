@@ -44,7 +44,8 @@ ui <- fluidPage(
                            selectInput("year", 
                                        "Select year:",
                                        choices = c( "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"),
-                                       selected = "2018")
+                                       selected = "2018"),
+                        p("Select a year to observe the number of nests recorded that did not persist throughout the SNowy Plover breeding season due to various factors. ")   
                          ),
                          
                          # Show a plot of the generated distribution
@@ -61,7 +62,8 @@ ui <- fluidPage(
                            checkboxGroupInput("stage",
                                               "Select breeding stage:",
                                               choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
-                                              selected = "Nests")
+                                              selected = "Nests"),
+                           p ("Use the check boxes to view trends in indicators of breeding from when COPR was first entered into the UC Reserve System in 2001 until 2018.")
                          ),
                          
                          
@@ -94,7 +96,8 @@ ui <- fluidPage(
                            
                            radioButtons("div_year", 
                                         "Select Survey Year:",
-                                        choices = c("2015","2016","2017"))
+                                        choices = c("2015","2016","2017")),
+                           p("Select a year to see the number of different species recorded in a given area of the reserve known as a polygon furing that year.")
                          ),
                          
                          # Show a plot of the generated distribution
@@ -116,7 +119,8 @@ ui <- fluidPage(
                            selectInput("top_number", 
                                        "Select number of top species:",
                                        choices = c(1,2,3,4,5,6,7,8,9),
-                                       selected = 6)
+                                       selected = 6),
+                           p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs are ordered from most abundant bird species recorded in that year, showing the up to nine of the most abundant bird species at the reserve at a given yeaar.")
                          ),
                          
                          
@@ -264,28 +268,49 @@ server <- function(input, output) {
       group_by(Month, Species)%>%
       summarise( count = sum(Count))%>% 
       arrange(Species, -count)
+    
+    
   })
+  
+  
+  
+  #Create facet labels with full bird name  
+  bird_names <-  reactive({ c(   `AMWI` = "American Wigeon",
+                                                `ANHU` = "Anna's Hummingbird", 
+                                                `BBPL` = "Black-Bellied Plover",
+                                                `CALT` = "California Towhee",
+                                                `HOFI` = "House Finch",
+                                                `MODO` = "Mourning Dove",
+                                                `NSHO` = "Northern Shoveler",
+                                                `RUDO` = "Ruddy Duck",
+                                                `SAND` = "Sanderling",
+                                                `SEPL` = "Semipalmated Plover",
+                                                `SNPL` = "Snowy Plover",
+                                                `WESA` = "Western Sandpiper",
+                                                `WILL` = "Willet")
+  })
+  
   
   # Render column graph
   output$topPlot <- renderPlot({
-    ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +   geom_col(fill = "skyblue3") + 
+    ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +  
+      geom_col(fill = "skyblue3") + 
       facet_wrap(~Species, scale = 'free_x') +
       theme_classic() +
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_x_continuous( breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))+
+      scale_x_discrete( drop = FALSE, breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))+
       scale_y_continuous(expand = c(0, 0), limits = c(0,250))+
       labs( y = "Number Observed")+
       ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))
   })
   
   
-  
   output$topTable <- renderDataTable({
-    
     bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
     colnames(bird_table) <- c("Alpha", "Common", "Scientific")
     bird_table
   }, options= list(paging = FALSE, searching = FALSE,  pageLength = 6))
+
   
   
   # Render map
