@@ -42,6 +42,7 @@ ui <- fluidPage(
                                        "Select year:",
                                        choices = c( "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"),
                                        selected = "2018"),
+                           tags$hr(style="border-color: blue;"),
                         p("Select a year to observe the number of nests recorded that did not persist throughout the SNowy Plover breeding season due to various factors. ")   
                          ),
                          
@@ -60,6 +61,7 @@ ui <- fluidPage(
                                               "Select breeding stage:",
                                               choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
                                               selected = "Nests"),
+                           tags$hr(style="border-color: blue;"),
                            p ("Use the check boxes to view trends in indicators of breeding from when COPR was first entered into the UC Reserve System in 2001 until 2018.")
                          ),
                          
@@ -94,6 +96,7 @@ ui <- fluidPage(
                            radioButtons("div_year", 
                                         "Select Survey Year:",
                                         choices = c("2015","2016","2017")),
+                           tags$hr(style="border-color: blue;"),
                            p("Select a year to see the number of different species recorded in a given area of the reserve known as a polygon furing that year.")
                          ),
                          
@@ -117,6 +120,7 @@ ui <- fluidPage(
                                        "Select number of top species:",
                                        choices = c(1,2,3,4,5,6,7,8,9),
                                        selected = 6),
+                           tags$hr(style="border-color: blue;"),
                            p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs are ordered from most abundant bird species recorded in that year, showing the up to nine of the most abundant bird species at the reserve at a given yeaar.")
                          ),
                          
