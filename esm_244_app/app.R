@@ -135,7 +135,7 @@ ui <- fluidPage(
                        fluidRow(
                          HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
                               <div class=\"panel-body\">
-                              Only January and February 2017 monthly observations on bird diversity available at this time.
+                              Only January and February  2017 monthly observations on bird diversity available at this time.
                               </div>
                               </div>")
                          )
