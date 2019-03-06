@@ -278,16 +278,20 @@ server <- function(input, output) {
   # Render column graph
   output$topPlot <- renderPlot({
     bird_names2 <- c(   `AMWI` = "American Wigeon",
+                        `CAGU`= "California Gull",
                         `ANHU` = "Anna's Hummingbird", 
                         `BBPL` = "Black-Bellied Plover",
                         `CALT` = "California Towhee",
+                        `CATE`= "Caspian Tern",
                         `HOFI` = "House Finch",
                         `MODO` = "Mourning Dove",
                         `NSHO` = "Northern Shoveler",
-                        `RUDO` = "Ruddy Duck",
+                        `RUDU` = "Ruddy Duck",
                         `SAND` = "Sanderling",
                         `SEPL` = "Semipalmated Plover",
                         `SNPL` = "Snowy Plover",
+                        `WCSP`= "White Crowned Sparrow",
+                        `WEBL`= "Western Bluebird",
                         `WESA` = "Western Sandpiper",
                         `WILL` = "Willet")
     
@@ -306,7 +310,7 @@ server <- function(input, output) {
   
   output$topTable <- renderDataTable({
     bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
-    colnames(bird_table) <- c("Alpha Code", "Common", "Scientific")
+    colnames(bird_table) <- c("Alpha Code (English)", "Alpha Code (Scientific)", "Common", "Scientific")
     bird_table
   }, options= list(paging = FALSE, searching = FALSE,  pageLength = 6))
 
