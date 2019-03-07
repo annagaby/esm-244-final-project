@@ -1,6 +1,9 @@
 library(shiny)
 library(tidyverse)
 library(shinythemes)
+library(leaflet)
+library(sf)
+library(lubridate)
 
 # Define UI for application
 ui <- fluidPage(
@@ -15,7 +18,7 @@ ui <- fluidPage(
               # First tab
               tabPanel("Summary",
                        h1("About this App "),
-                       p("This is a data exploration tool intended for educators, birdwatchers, beach users, and everyone interested on the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected by two of COPR’s programs: Snowy Plover Conservation and Bird Monitoring."),
+                       p("This data exploration tool is intended for educators, birdwatchers, beach users, and everyone interested on the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected by two of COPR’s programs: Snowy Plover Conservation and Bird Monitoring."),
                        h1("Coal Oil Point Reserve "),
                        p("Coal Oil Point Reserve (COPR) is a small area that includes dune vegetation and rare wildlife, like the dune spider, the globose dune beetle and the threatened Western Snowy Plover surrounded by increasing urbanization.  The main challenge  at the reserve is to maintain the habitats and species that live here, despite habitat fragmentation, pollution, disturbances, and climate change.  Many of our wildlife and habitat conservation programs started because we noticed a species' population declining over time.  We first try to understand the factors causing the decline and then implement actions to reduce or eliminate these threats.  For many species, the reserve's boundaries are not sufficient for their safety and survival.  Cooperation with neighboring properties in a much larger spacial scale is essential to the protection of some species.Check out all of the different research and conservation efforts happening at COPR on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website.")),
                        h2("Snowy Plover Conservation"),
@@ -42,7 +45,7 @@ ui <- fluidPage(
                                        "Select year:",
                                        choices = c( "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"),
                                        selected = "2018"),
-                           tags$hr(style="border-color: blue;"),
+                           tags$hr(style="border-color: gray;"),
                         p("Select a year to observe the number of nests recorded that did not persist throughout the SNowy Plover breeding season due to various factors. ")   
                          ),
                          
@@ -61,7 +64,7 @@ ui <- fluidPage(
                                               "Select breeding stage:",
                                               choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
                                               selected = "Nests"),
-                           tags$hr(style="border-color: blue;"),
+                           tags$hr(style="border-color: gray;"),
                            p ("Use the check boxes to view trends in indicators of breeding from when COPR was first entered into the UC Reserve System in 2001 until 2018.")
                          ),
                          
@@ -76,7 +79,7 @@ ui <- fluidPage(
                        fluidRow(
                          HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
                            <div class=\"panel-body\">
-                              Eggs data is the recorded number of “confirmed eggs”. In some cases, it is not possible to confirm the number of eggs due to the level of disturbance this would cause to nearby nests or chicks. This explains why in year 2007 there are no eggs laid, but there are eggs hatched and fledged chicks.
+                              Eggs data shows number of “confirmed eggs”. In some cases, it is not possible to confirm the number of eggs due to the level of disturbance this would cause to nearby nests or chicks. This explains why in year 2007 there are no eggs laid, but there are eggs hatched and fledged chicks.
                               </div>
                               </div>")
                        )
@@ -96,7 +99,7 @@ ui <- fluidPage(
                            radioButtons("div_year", 
                                         "Select Survey Year:",
                                         choices = c("2015","2016","2017")),
-                           tags$hr(style="border-color: blue;"),
+                           tags$hr(style="border-color: gray;"),
                            p("Select a year to see the number of different species recorded in a given area of the reserve known as a polygon furing that year.")
                          ),
                          
@@ -120,7 +123,7 @@ ui <- fluidPage(
                                        "Select number of top species:",
                                        choices = c(1,2,3,4,5,6,7,8,9),
                                        selected = 6),
-                           tags$hr(style="border-color: blue;"),
+                           tags$hr(style="border-color: gray;"),
                            p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs are ordered from most abundant bird species recorded in that year, showing the up to nine of the most abundant bird species at the reserve at a given yeaar.")
                          ),
                          
@@ -154,6 +157,33 @@ ui <- fluidPage(
 
 # Define server logic
 server <- function(input, output) {
+  
+  # Read files
+  snowyplover <- read_csv("SnowyPlover.csv")
+  shorebirds <- read_csv("COPR_Shorebird.csv")
+  bird_names <- read_csv("bird_names.csv")
+  COPR_polygons <- st_read(dsn = ".", layer = "COPR_polygons-polygon") 
+  
+  # Data wrangling with Snowy Plover breeding data
+  
+  breeding <- snowyplover %>% 
+    select( year, total_eggs, eggs_hatched, chicks_fledged) %>% 
+    mutate( nests = 1)
+  
+  # Removing NA, ".", ?, and uncomfirmed
+  breeding[is.na(breeding)] <- 0
+  breeding[ breeding == "." | breeding == "unconfirmed" | breeding == "?"] <- 0
+  
+  # Coerce to numeric class
+  breeding = as.data.frame(sapply(breeding, as.numeric))
+  
+  # Creating count table by year and by breeding stage
+  
+  breeding_table <- breeding %>% 
+    group_by(year) %>% 
+    summarise( "Nests" = sum(nests), "Eggs laid" = sum(total_eggs), "Eggs hatched" = sum(eggs_hatched), "Fledged chicks" = sum(chicks_fledged)) %>% 
+    gather("stage", "count", 2:5)
+  
   
   
   output$distPlot <- renderPlot({
@@ -322,6 +352,8 @@ server <- function(input, output) {
   
   # Render map
   output$polygon_map <- renderLeaflet({
+    
+    
     labels <- sprintf(
       "%s",
       COPR_polygons$NAME
