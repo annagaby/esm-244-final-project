@@ -4,6 +4,8 @@ library(shinythemes)
 library(leaflet)
 library(sf)
 library(lubridate)
+library(beepr)
+library(praise)
 
 # Define UI for application
 ui <- fluidPage(
@@ -20,7 +22,7 @@ ui <- fluidPage(
                        h1("About this App "),
                        p("This data exploration tool is intended for educators, birdwatchers, beach users, and everyone interested in the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected by two of COPR’s programs: Snowy Plover Conservation and Bird Monitoring. The purpose of presenting years of monitoring data in a user-friendly fashion is to encourage conservation and restoration of our ecosystems through education.", align = "justify"),
                        h1("Coal Oil Point Reserve "),
-                       p("COPR was establish in 1970 to protect part of the natural habitat along the South Coast of Santa Barbara County. It is one of the 35 reserves that form part of the", a( href="https://ucnrs.org", "University of California Natural Reserve System"), " Check out all of the different research and conservation efforts happening at COPR on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website."), align = "justify"),
+                       p("COPR was establish in 1970 to protect part of the natural habitat along the South Coast of Santa Barbara County. It is one of the 35 reserves that form part of the", a( href="https://ucnrs.org", "University of California Natural Reserve System."), " Check out all of the different research and conservation efforts happening at COPR on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website."), align = "justify"),
                        h2("Snowy Plover Conservation"),
                        p("The Snowy Plover Conservation Program is the reserve’s most well known program. It focuses on protecting the habitat of the Western Snowy Plover", tags$i("(Charadrius nivosus nivosus)"), ", a threatened species. As part of the program, observers collect plover data at least three times per week during the breeding season. This data includes number of adults, number of nests, fate of nests, and fate of chicks. Once a nest is identified, observers will also count its number of eggs. If a nest is determined to have been predated, observers will identify the type of predator by its footprints and record it. ", align = "justify"),
                        tags$img( style="display: block; margin-left: auto; margin-right: auto;", width ="100%", src = "https://lh3.googleusercontent.com/rAmbw7zPfHeh9-lOkmnL2Sl5ij1jShcfZejayPakYyiQvwnDuazcy6uzrxSry-Q6PoI9LTxTj1KFUJkpKa15DGXmV2IKV4au1ThwBwIi_f-J45BUmplIkTbMGYxO83dboZ1MclRx=w1920-h1080", alt = "Image of Western Snowy Plover chicks"),
@@ -96,7 +98,7 @@ ui <- fluidPage(
                            
                            radioButtons("div_year", 
                                         "Select Survey Year:",
-                                        choices = c("2015","2016","2017")),
+                                        choices = c("2015","2016","2018")),
                            tags$hr(style="border-color: gray;"),
                            p("Select a year to see the number of different species recorded in a given area of the reserve.")
                          ),
@@ -115,7 +117,7 @@ ui <- fluidPage(
                            
                            radioButtons("top_year", 
                                         "Select Survey Year:",
-                                        choices = c("2015","2016","2017")
+                                        choices = c("2015","2016","2018")
                            ),
                            selectInput("top_number", 
                                        "Select number of top species:",
@@ -136,7 +138,7 @@ ui <- fluidPage(
                        fluidRow(
                          HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
                               <div class=\"panel-body\">
-                              Only January and February  2017 monthly observations on bird diversity available at this time.
+                              In 2018 COPR switched to digitalized bird observations. At this time 2017 data has not been converted to a digital format, but will be by the end of 2019.
                               </div>
                               </div>")
                          )
@@ -265,7 +267,7 @@ server <- function(input, output) {
       ggtitle(paste("Bird Diversity at COPR", input$div_year))+
       theme_classic()+
       theme(plot.title = element_text(hjust = 0.5))+
-      scale_y_continuous(expand = c(0,0), limits = c(0,80), breaks= c(0,20,40,60,80))
+      scale_y_continuous(expand = c(0,0), limits = c(0,85), breaks= c(0,20,40,60,80))
       
    
   })
@@ -305,11 +307,6 @@ server <- function(input, output) {
   })
   
   
-  
-  #Create facet labels with full bird name  
-
-  
-  
   # Render column graph
   output$topPlot <- renderPlot({
     bird_names2 <- c(   `AMWI` = "American Wigeon",
@@ -328,7 +325,10 @@ server <- function(input, output) {
                         `WCSP`= "White Crowned Sparrow",
                         `WEBL`= "Western Bluebird",
                         `WESA` = "Western Sandpiper",
-                        `WILL` = "Willet")
+                        `WILL` = "Willet",
+                        `CLSW` = "Cliff Swallow",
+                        `SOSP` = "Song Sparrow",
+                        `LESA` = "Least Sandpiper")
     
     
     ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +  
