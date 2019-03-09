@@ -70,7 +70,7 @@ breeding = as.data.frame(sapply(breeding, as.numeric))
 
 breeding_table <- breeding %>% 
   group_by(year) %>% 
-  summarise( "Nests" = sum(nests), "Eggs laid" = sum(total_eggs), "Eggs hatched" = sum(eggs_hatched), "Fledged chicks" = sum(chicks_fledged)) %>% 
+  summarise( "Nests" = sum(nests), "Eggs Laid" = sum(total_eggs), "Eggs Hatched" = sum(eggs_hatched), "Fledged Chicks" = sum(chicks_fledged)) %>% 
   gather("stage", "count", 2:5)
 
 

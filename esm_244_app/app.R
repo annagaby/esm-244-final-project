@@ -19,19 +19,21 @@ ui <- fluidPage(
               
               # First tab
               tabPanel("Summary",
-                       h1("About this App "),
-                       p("This data exploration tool is intended for educators, birdwatchers, beach users, and everyone interested in the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected by two of COPR’s programs: Snowy Plover Conservation and Bird Monitoring. The purpose of presenting years of monitoring data in a user-friendly fashion is to encourage conservation and restoration of our ecosystems through education.", align = "justify"),
                        h1("Coal Oil Point Reserve "),
-                       p("COPR was establish in 1970 to protect part of the natural habitat along the South Coast of Santa Barbara County. It is one of the 35 reserves that form part of the", a( href="https://ucnrs.org", "University of California Natural Reserve System."), " Check out all of the different research and conservation efforts happening at COPR on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website."), align = "justify"),
+                       p("Coal Oil Point Reserve (COPR) was established in 1970 to protect part of the natural habitat along the South Coast of Santa Barbara County that a wide variety of bird species inhabit. It is one of the 35 reserves that form part of the", a( href="https://ucnrs.org", "University of California Natural Reserve System."), "COPR has several  different research and conservation efforts including habitat restoration, bird monitoring, water quality monitoring, and snowy plover conservation which are described in more detail on their", a(href="https://copr.nrs.ucsb.edu/about/programs/snowy-plover-conservation", "website.", align = "justify"),
+                         p("This data exploration tool is intended for educators, birdwatchers, beach users, and anyone interested in the conservation efforts taking place at COPR. It provides interactive visualizations of data collected in two of COPR’s research programs: Snowy Plover Conservation and Bird Monitoring.", align = "justify"),
                        h2("Snowy Plover Conservation"),
-                       p("The Snowy Plover Conservation Program is the reserve’s most well known program. It focuses on protecting the habitat of the Western Snowy Plover", tags$i("(Charadrius nivosus nivosus)"), ", a threatened species. As part of the program, observers collect plover data at least three times per week during the breeding season. This data includes number of adults, number of nests, fate of nests, and fate of chicks. Once a nest is identified, observers will also count its number of eggs. If a nest is determined to have been predated, observers will identify the type of predator by its footprints and record it. ", align = "justify"),
+                       p("The Snowy Plover Conservation program is the reserve’s best known research effort. It focuses on protecting the habitat of the Western Snowy Plover", tags$i("(Charadrius nivosus nivosus)"), "a threatened shorebird species. In 2001, Snowy Plover nests were discovered on the reserve for the first time in decades, inspiring COPR to develop a targeted conservation program. As part of the program, staff collect Snowy Plover data at least three times per week during the breeding season. This data includes number of adults, number of nests, metrics to track reproduction, and fate of nests. Once a nest is identified, COPR’s observers will count the number or eggs, eggs hatched, and chicks fledged throughout the breeding season. Some nests are destroyed during the breeding season. When this is the case, COPR’s observers will identify the type of animal predator or environmental condition responsible.", align = "justify"),
+p("Under the “Snowy Plover Conservation” tab in this app, users can view the frequency of different forms of nest destruction for a given year and trends in nest, egg, and chick counts since 2001.", align = "justify"),
+
                        tags$img( style="display: block; margin-left: auto; margin-right: auto;", width ="100%", src = "https://lh3.googleusercontent.com/rAmbw7zPfHeh9-lOkmnL2Sl5ij1jShcfZejayPakYyiQvwnDuazcy6uzrxSry-Q6PoI9LTxTj1KFUJkpKa15DGXmV2IKV4au1ThwBwIi_f-J45BUmplIkTbMGYxO83dboZ1MclRx=w1920-h1080", alt = "Image of Western Snowy Plover chicks"),
                        h2("Bird Monitoring"),
-                       p("COPR maintains a long-term monitoring program focused on measuring bird species abundance and diversity throughout the reserve. Since February 2015, bird surveys are conducted once a month within 10 permanent sampling areas on the reserve. These areas are shown in the map below as polygons. The surveys are conducted by two observers following a", a( href= "https://copr.nrs.ucsb.edu/sites/default/files/images/Protocol_Bird%20Abundance%20at%20Coal%20Oil%20Point%20Reserve_20170529.pdf", "bird monitoring protocol."), "For each observation the number of birds, species, location, and behavior is recorded. Individual observations with their locations are available in a", a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Google Fusion Table and Map."), align = "justify"), 
-                       HTML("<br><br><br>"),
+                       p("COPR maintains a long-term monitoring program focused on measuring bird species abundance and diversity throughout the reserve. Since February 2015, bird surveys are conducted once a month within ten permanent sampling areas on the reserve. These areas are shown in the map below as polygons. The surveys are conducted by two observers following COPR’s", a( href= "https://copr.nrs.ucsb.edu/sites/default/files/images/Protocol_Bird%20Abundance%20at%20Coal%20Oil%20Point%20Reserve_20170529.pdf", "bird monitoring protocol."), "Once a month, two of COPR’s observers will traverse the reserve on foot and spend a specific amount of time in each polygon confirming the present of all birds in that polygon visually or auditorily. For each bird observed its species, location, and behavior is recorded. Individual observations with their locations are available in a", a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Google Fusion Table and Map."), align = "justify"), 
+                       p("Under the “Bird Monitoring” tab, users can view the number of species observed in the different polygons for each year that observations have been recorded. They can also choose to view up to nine graphs showing the most abundant species at the reserve at a selected year.", align = "justify"),
+                       
                        leafletOutput("polygon_map")
                        
-                       ),
+                       )),
               
               
               # Second tab
@@ -46,7 +48,7 @@ ui <- fluidPage(
                                        choices = c( "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"),
                                        selected = "2018"),
                            tags$hr(style="border-color: gray;"),
-                        p("Select a year to observe the number of affected nests throughout the Snowy Plover breeding season due to various factors. ")   
+                        p("Select a year to observe the number of nests destroyed or abandoned throughout the Snowy Plover breeding season due to various factors. ")   
                          ),
                          
                          # Show a plot of the generated distribution
@@ -62,7 +64,7 @@ ui <- fluidPage(
                          sidebarPanel(
                            checkboxGroupInput("stage",
                                               "Select breeding stage:",
-                                              choices = c("Nests", "Eggs laid", "Eggs hatched", "Fledged chicks"),
+                                              choices = c("Nests", "Eggs Laid", "Eggs Hatched", "Fledged Chicks"),
                                               selected = "Nests"),
                            tags$hr(style="border-color: gray;"),
                            p ("Use the check boxes to view trends in indicators of breeding from when COPR was first became a restored nesting site in 2001 until 2018.")
@@ -79,7 +81,7 @@ ui <- fluidPage(
                        fluidRow(
                          HTML("<div class=\"panel panel-primary\"><div class=\"panel-heading\">Note:</div>
                            <div class=\"panel-body\">
-                              <b>Nests:</b> Data shows total number of nests identified in the season, including succesful and unsuccesful. High number of nests does not necessarily mean a more productive breeding season, as it can also mean that high levels of disturbance caused the plovers to abandon and rebuild their nests.<br><b>Eggs laid:</b> Data shows number of “confirmed eggs”. In some cases, it is not possible to confirm the number of eggs due to the level of disturbance this would cause to nearby nests or chicks. This explains why in year 2007 there are no eggs laid, but there are eggs hatched and fledged chicks.
+                              <b>Nests:</b> Data shows total number of nests identified in the breeding season, including those successfully used for raising chicks and those that were unused. A high number of nests does not necessarily mean a more productive breeding season, as it can also mean that high levels of disturbance caused the Snowy Plovers to abandon and rebuild their nests.<br><b>Eggs laid:</b> Data shows the number of “confirmed eggs”. In some cases, it is not possible to confirm the number of eggs due to the level of disturbance this would cause to nearby nests or chicks. This explains why in year 2007 there are no confirmed eggs laid, while there are eggs hatched and fledged chicks.
                               </div>
                               </div>")
                        )
@@ -124,7 +126,7 @@ ui <- fluidPage(
                                        choices = c(1,2,3,4,5,6,7,8,9),
                                        selected = 6),
                            tags$hr(style="border-color: gray;"),
-                           p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs show up to nine of the most abundant bird species at the reserve during a given yeaar.")
+                           p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs show up to nine of the most abundant bird species at the reserve during a given year.")
                          ),
                          
                          
@@ -184,7 +186,7 @@ server <- function(input, output) {
   
   breeding_table <- breeding %>% 
     group_by(year) %>% 
-    summarise( "Nests" = sum(nests), "Eggs laid" = sum(total_eggs), "Eggs hatched" = sum(eggs_hatched), "Fledged chicks" = sum(chicks_fledged)) %>% 
+    summarise( "Nests" = sum(nests), "Eggs Laid" = sum(total_eggs), "Eggs Hatched" = sum(eggs_hatched), "Fledged Chicks" = sum(chicks_fledged)) %>% 
     gather("stage", "count", 2:5)
   
   
