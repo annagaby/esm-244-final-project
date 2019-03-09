@@ -1,6 +1,7 @@
 # esm-244-final-project
-Snowy Plover and Shorebird Abundance at Coal Point Oil Reserve
-ESM 244 Anna Calle Angie Bouche
+Snowy Plover and Shorebird Abundance at Coal Point Oil Reserve  
+ESM 244  
+Anna Calle Angie Bouche
 
 Coal Oil Point Reserve (COPR) was established in 1970 to protect part of the natural habitat along the South Coast of Santa Barbara County that a wide variety of bird species inhabit. It is one of the 35 reserves that form part of the University of California Natural Reserve System. This data exploration tool is intended for educators, birdwatchers, beach users, and everyone interested in the conservation efforts taking place at Coal Oil Point Reserve (COPR) in Santa Barbara, California. It provides interactive visualizations of data collected in two of COPR’s research programs: Snowy Plover Conservation and Bird Monitoring. 
 
