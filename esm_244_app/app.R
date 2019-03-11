@@ -26,11 +26,13 @@ ui <- fluidPage(
                        p("The Snowy Plover Conservation program is the reserve’s best known research effort. It focuses on protecting the habitat of the Western Snowy Plover", tags$i("(Charadrius nivosus nivosus)"), "a threatened shorebird species. In 2001, Snowy Plover nests were discovered on the reserve for the first time in decades, inspiring COPR to develop a targeted conservation program. As part of the program, staff collect Snowy Plover data at least three times per week during the breeding season. This data includes number of adults, number of nests, metrics to track reproduction, and fate of nests. Once a nest is identified, COPR’s observers will count the number or eggs, eggs hatched, and chicks fledged throughout the breeding season. Some nests are destroyed during the breeding season. When this is the case, COPR’s observers will identify the type of animal predator or environmental condition responsible.", align = "justify"),
 p("Under the “Snowy Plover Conservation” tab in this app, users can view the frequency of different forms of nest destruction for a given year and trends in nest, egg, and chick counts since 2001.", align = "justify"),
 
+# Add Snowy Plover image
                        tags$img( style="display: block; margin-left: auto; margin-right: auto;", width ="100%", src = "https://lh3.googleusercontent.com/rAmbw7zPfHeh9-lOkmnL2Sl5ij1jShcfZejayPakYyiQvwnDuazcy6uzrxSry-Q6PoI9LTxTj1KFUJkpKa15DGXmV2IKV4au1ThwBwIi_f-J45BUmplIkTbMGYxO83dboZ1MclRx=w1920-h1080", alt = "Image of Western Snowy Plover chicks"),
                        h2("Bird Monitoring"),
                        p("COPR maintains a long-term monitoring program focused on measuring bird species abundance and diversity throughout the reserve. Since February 2015, bird surveys have been conducted once a month within ten permanent sampling areas on the reserve. These areas are shown in the map below as polygons. The surveys are conducted by two observers following COPR’s", a( href= "https://copr.nrs.ucsb.edu/sites/default/files/images/Protocol_Bird%20Abundance%20at%20Coal%20Oil%20Point%20Reserve_20170529.pdf", "bird monitoring protocol."), "Once a month, two of COPR’s observers will traverse the reserve on foot and spend a specific amount of time in each polygon confirming the present of all birds in that polygon visually or auditorily. For each bird observed its species, location, and behavior is recorded. Individual observations with their locations are available in a", a(href="https://fusiontables.google.com/data?docid=1RihfY8XXjWT6EpkxoId2m4JzyPLD_j7KU6rsHNR6#map:id=3", "Google Fusion Table and Map."), align = "justify"), 
                        p("Under the “Bird Monitoring” tab, users can view the number of species observed in the different polygons for each year that observations have been recorded. They can also choose to view up to nine graphs showing the most abundant species at the reserve at a selected year and observe seasonal trends in abundance.", align = "justify"),
-                       
+
+              # Add reserve's map         
                        leafletOutput("polygon_map")
                        
                        )),
@@ -51,15 +53,15 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                         p("Select a year to observe the number of nests destroyed or abandoned throughout the Snowy Plover breeding season due to various factors. ")   
                          ),
                          
-                         # Show a plot of the generated distribution
+                         # Show a plot of the generated nest failure column graph
                          mainPanel(
-                           plotOutput("distPlot")
+                           plotOutput("failurePlot")
                          )
                        ),
                        
                        titlePanel("Breeding Success"),
                        
-                       # Sidebar with input for breeding stage
+                       # Sidebar with checkbox input for breeding stage
                        sidebarLayout(
                          sidebarPanel(
                            checkboxGroupInput("stage",
@@ -72,7 +74,7 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                          
                          
                          
-                         # Show a plot of the generated distribution
+                         # Show generated breeding lines plot 
                          mainPanel(
                            plotOutput("linesPlot")
                          )
@@ -92,9 +94,9 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
               
               # Third tab
               tabPanel("Bird Monitoring",
-                       titlePanel("Species Diversity by Year"), #titles widget
+                       titlePanel("Species Diversity by Year"),
                        
-                       # Sidebar with a slider input for number of bins 
+                       # Sidebar with a select box input for survey year
                        sidebarLayout(
                          sidebarPanel(
                            
@@ -105,7 +107,7 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                            p("Select a year to see the number of different species recorded in a given area of the reserve.")
                          ),
                          
-                         # Show a plot of the generated distribution
+                         # Show generated diversity bar graph
                          mainPanel(
                            plotOutput("diversity")
                          )
@@ -130,7 +132,7 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                          ),
                          
                          
-                         # Show a plot of the generated distribution
+                         # Show generated column top species graph and table
                          mainPanel(
                            plotOutput("topPlot", height = "600px"),
                            dataTableOutput("topTable")
@@ -148,6 +150,7 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                        
               ),
               hr(),
+# Create footer
               tags$footer("Developed by Angie Bouche <abouche@bren.ucsb.edu> and Anna Calle <annagcalle@bren.ucsb.edu> in programming language R version 3.5.1 (2018-07-02). Code on",tags$a(href ="https://github.com/annagaby/esm-244-final-project","GitHub."), " Data sources:", tags$ul(
                 tags$li("Coal Oil Point Reserve, UCSB Natural Reserve System (2019), Western Snowy Plover Breeding at Coal Oil Point Reserve 2001-2018, unpublished raw data."),
 tags$li("Coal Oil Point Reserve, UCSB Natural Reserve System (2019), Bird Abundance at Coal Oil Point Reserve 2015, 2016, 2018, unpublished raw data.")
@@ -170,7 +173,6 @@ server <- function(input, output) {
   COPR_polygons <- st_read(dsn = ".", layer = "COPR_polygons-polygon") 
   
   # Data wrangling with Snowy Plover breeding data
-  
   breeding <- snowyplover %>% 
     select( year, total_eggs, eggs_hatched, chicks_fledged) %>% 
     mutate( nests = 1)
@@ -190,9 +192,9 @@ server <- function(input, output) {
     gather("stage", "count", 2:5)
   
   
-  
-  output$distPlot <- renderPlot({
-    # Render a column graph for predators data
+  # Render a column graph for predators data
+  output$failurePlot <- renderPlot({
+   # Data wrangling for graph
     predators_graph <- snowyplover %>% 
       select(year, failure_cause) %>% 
       filter( failure_cause != "NA") %>%
@@ -217,6 +219,7 @@ server <- function(input, output) {
         failure_cause == "Abandoned" ~ "Other"
       ) )
     
+    # Creating graph 
     ggplot(predators_graph, aes( x = failure_cause, y = n)) +
       geom_col(aes(fill = type_failure)) +
       xlab("Cause of Failure") +
@@ -228,8 +231,6 @@ server <- function(input, output) {
       scale_fill_manual(labels = c("Animal Predator", "Environmental Factor", "Other"),
                           name = "Type of failure", values = c("navajowhite3", "skyblue3", "olivedrab2"))
   })
-  
-  
   
   
   # Render line graph for breeding data
@@ -254,15 +255,15 @@ server <- function(input, output) {
     }
   })
   
-  
+ # Render bar graph for diversity at each polygon
   output$diversity <- renderPlot({
-    
+    # Wrangling data
     bird_sp <- shorebirds %>% 
       filter(Year == input$div_year) %>% #Filter data set by year (use radio buttons or drop down menu to select)
       group_by(Species) %>% 
       count(Polygon_Location, Species) #Turn list of observed species into counts of how many different species observe
     
-    #Graph formatting
+    # Creating graph
     ggplot(bird_sp, aes(x=Polygon_Location))+
       geom_bar(fill = "navajowhite3")+
       labs(x= "Location", y = "Number of Species Observed")+ 
@@ -279,10 +280,10 @@ server <- function(input, output) {
   
   # Render column graphs for selected top bird species
   
-  #Converted dates into standard formate
+  #Converted dates into standard format
   shorebirds$Date <- as.Date(shorebirds$Date, "%m/%d/%Y")
   
-  # Top species by year
+  # List of top species using selected year input and selected number of species input
   top_by_year <- reactive({
     shorebirds %>%
       mutate( Month = month(Date)) %>%
@@ -295,7 +296,7 @@ server <- function(input, output) {
   })
   
   
-  # Monthly data filtered for top species by year
+  # Data wrangling to group observations by month for selected year
   top_filtered <-  reactive({
     shorebirds %>%
       mutate( Month = as.factor(month(Date))) %>%
@@ -306,11 +307,14 @@ server <- function(input, output) {
       arrange(Species, -count)
     
     
+    
   })
   
   
   # Render column graph
   output$topPlot <- renderPlot({
+    
+    # Add common name to 4-digit bird watching code
     bird_names2 <- c(   `AMWI` = "American Wigeon",
                         `CAGU`= "California Gull",
                         `ANHU` = "Anna's Hummingbird", 
@@ -332,7 +336,7 @@ server <- function(input, output) {
                         `SOSP` = "Song Sparrow",
                         `LESA` = "Least Sandpiper")
     
-    
+    # Create top species column graph
     ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +  
       geom_col(fill = "skyblue3") + 
       facet_wrap(~Species, scale = 'free_x', labeller = as_labeller(bird_names2)) +
@@ -344,7 +348,7 @@ server <- function(input, output) {
       ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))
   })
   
-  
+  # Render table of codes and names
   output$topTable <- renderDataTable({
     bird_table <- bird_names[bird_names$alpha_code %in% top_by_year()$Species,] 
     colnames(bird_table) <- c("Alpha Code (English)", "Alpha Code (Scientific)", "Common Name", "Scientific Name")
@@ -353,7 +357,7 @@ server <- function(input, output) {
 
   
   
-  # Render map
+  # Render reserve map
   output$polygon_map <- renderLeaflet({
     
     
