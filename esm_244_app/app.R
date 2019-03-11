@@ -291,7 +291,8 @@ server <- function(input, output) {
       group_by(Species) %>% 
       summarize( count = sum(Count)) %>% 
       arrange(-count) %>% 
-      head(as.numeric(input$top_number))
+      head(as.numeric(input$top_number)) %>% 
+      mutate( Species == as.factor(Species))
   })
   
   
@@ -303,10 +304,15 @@ server <- function(input, output) {
       filter( Year == input$top_year) %>% 
       group_by(Month, Species)%>%
       summarise( count = sum(Count))%>% 
-      arrange(Species, -count)
+      arrange(Species, -count) %>% 
+      mutate(Species = as.factor(Species))
     
     
     
+  })
+  
+  ordered_species_vector <- reactive({
+    top_by_year[['Species']]
   })
   
   
@@ -338,11 +344,11 @@ server <- function(input, output) {
     # Create top species column graph
     ggplot( top_filtered()[top_filtered()$Species %in% top_by_year()$Species,], aes( x = Month, y = count)) +  
       geom_col(fill = "skyblue3") + 
-      facet_wrap(~Species, scale = 'free_x', labeller = as_labeller(bird_names2)) +
+      facet_wrap(~ Species, scale = 'free_x', labeller = as_labeller(bird_names2)) +
       theme_classic() +
       theme(plot.title = element_text(hjust = 0.5)) +
       scale_x_discrete( drop = FALSE, breaks = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")) +
-      scale_y_continuous(expand = c(0, 0), limits = c(0,250))+
+      scale_y_continuous(expand = c(0, 0))+
       labs( y = "Number Observed")+
       ggtitle(paste("Top Bird Species at COPR in Monthly Observations", input$top_year))
   })
