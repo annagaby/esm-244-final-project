@@ -1,3 +1,4 @@
+#load relevant packages
 library(shiny)
 library(tidyverse)
 library(shinythemes)
@@ -126,7 +127,7 @@ p("Under the “Snowy Plover Conservation” tab in this app, users can view the
                                        choices = c(1,2,3,4,5,6,7,8,9),
                                        selected = 6),
                            tags$hr(style="border-color: gray;"),
-                           p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs show up to nine of the most abundant bird species at the reserve during a given year.")
+                           p("Use the buttons to select a year, and the drop down menu to select how many graphs you would like to view. The graphs show up to nine of the most abundant bird species at the reserve during a given yearordered alphabetically.")
                          ),
                          
                          
