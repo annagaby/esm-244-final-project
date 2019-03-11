@@ -4,8 +4,6 @@ library(shinythemes)
 library(leaflet)
 library(sf)
 library(lubridate)
-library(beepr)
-library(praise)
 
 # Define UI for application
 ui <- fluidPage(
@@ -386,10 +384,16 @@ server <- function(input, output) {
                     direction = "auto")) %>% 
       addMarkers(lat = 34.411371, lng = -119.876618,
                  label = "Nature Center Coal Oil Point Reserve",
-                 group = "Markers") %>% 
+                 group = "Markers",
+                 labelOptions = labelOptions(
+                   style = list("font-weight" = "normal", padding = "3px 8px"),
+                   textsize = "15px")) %>% 
       addMarkers(lat = 34.407912, lng = -119.878954,
                  label = "Sands Beach Entrance",
-                 group = "Markers") %>% 
+                 group = "Markers",
+                 labelOptions = labelOptions(
+                   style = list("font-weight" = "normal", padding = "3px 8px"),
+                   textsize = "15px")) %>% 
       addLayersControl(
         baseGroups = c("Esri World Imagery", "Open Street Map"),
         overlayGroups = c("Polygons", "Markers"),
