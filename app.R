@@ -11,8 +11,11 @@ ui <- fluidPage(
   theme = shinytheme("sandstone"),
   
   # Application title
-  titlePanel(tags$img(src = "https://copr.nrs.ucsb.edu/sites/default/files/copr-logo.jpg", "Snowy Plover and Bird Abundance at Coal Oil Point Reserve"),
-             "Snowy Plover and Bird Abundance at Coal Point Oil Reserve"),
+  titlePanel(
+    tagList(
+      tags$img(src = "COPR-logo.png", height = "80px"),
+      "Snowy Plover and Bird Abundance at Coal Oil Point Reserve"
+    )),
   
   navbarPage( "",
               
@@ -171,17 +174,26 @@ server <- function(input, output) {
   bird_names <- read_csv("bird_names.csv")
   COPR_polygons <- st_read(dsn = ".", layer = "COPR_polygons-polygon") 
   
-  # Data wrangling with Snowy Plover breeding data
-  breeding <- snowyplover %>% 
-    select( year, total_eggs, eggs_hatched, chicks_fledged) %>% 
-    mutate( nests = 1)
+  breeding <- snowyplover %>%
+    select(year, total_eggs, eggs_hatched, chicks_fledged) %>%
+    mutate(nests = 1)
   
-  # Removing NA, ".", ?, and uncomfirmed
+  # Identify character columns only
+  char_cols <- sapply(breeding, is.character)
+  
+  # Replace ".", "?", "unconfirmed" in character columns
+  breeding[char_cols] <- lapply(breeding[char_cols], function(x) {
+    x[x %in% c(".", "?", "unconfirmed")] <- NA
+    x
+  })
+  
+  # Convert all columns to numeric
+  breeding <- breeding %>%
+    mutate(across(everything(), as.numeric))
+  
+  # Replace remaining NA with 0
   breeding[is.na(breeding)] <- 0
-  breeding[ breeding == "." | breeding == "unconfirmed" | breeding == "?"] <- 0
   
-  # Coerce to numeric class
-  breeding = as.data.frame(sapply(breeding, as.numeric))
   
   # Creating count table by year and by breeding stage
   
